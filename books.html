@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <title>کتابیں | محمد رضوان رضی</title>
+    <!-- جمیل نوری نستعلیق فونٹ -->
+    <link href="https://fontlibrary.org/face/jameel-noori-nastaleeq" rel="stylesheet" type="text/css"/>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: 'JameelNooriNastaleeqRegular', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .header-nav {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .back-btn, .lang-btn {
+            background-color: #B91C1C;
+            color: white;
+            border: 2px solid #D4AF37;
+            padding: 8px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 20px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover, .lang-btn:hover { background-color: #991b1b; }
+
+        .page-title {
+            color: #D4AF37;
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* کتابوں کا گرڈ */
+        .books-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* کتاب کا کارڈ */
+        .book-card {
+            background-color: #1e293b;
+            border: 2px solid #D4AF37;
+            border-radius: 15px;
+            padding: 20px;
+            width: 270px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .book-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            margin-bottom: 15px;
+        }
+
+        .book-title-main {
+            font-size: 1.8rem;
+            color: #D4AF37;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .book-title-sub {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .read-btn {
+            background-color: #D4AF37;
+            color: #0f172a;
+        }
+
+        .read-btn:hover { background-color: #ffffff; }
+
+        .download-btn {
+            background-color: transparent;
+            color: #ffffff;
+            border: 1px solid #D4AF37;
+        }
+
+        .download-btn:hover { background-color: #B91C1C; }
+        /* فید-ان اینیمیشن ایفیکٹ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* کتابوں والے کارڈز پر اینیمیشن کا اطلاق */
+        .book-card {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        /* الگ الگ کتابوں کے لیے ہلکا سا ٹائم ڈیلے */
+        .book-card:nth-child(1) { animation-delay: 0.1s; }
+        .book-card:nth-child(2) { animation-delay: 0.2s; }
+        .book-card:nth-child(3) { animation-delay: 0.3s; }
+        .book-card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body class="notranslate" translate="no">
+
+    <div class="header-nav">
+        <a href="index.html" class="back-btn" id="back-btn">← ہوم پیج</a>
+        <button class="lang-btn" onclick="toggleLanguage()">English / اردو</button>
+    </div>
+
+    <h1 class="page-title" id="page-title">میری تصانیف</h1>
+
+    <div class="books-grid">
+
+        <!-- کتاب 1: خون دل مسلم -->
+        <div class="book-card" 
+             data-title-ur="خون دل مسلم" 
+             data-title-en="Crimson Legacy"
+             data-sub-ur="تحریک پاکستان سے آزادی کشمیر تک" 
+             data-sub-en="The Kashmir Struggle">
+            <img src="kashmir.jpg" alt="خون دل مسلم" class="book-img">
+            <h2 class="book-title-main">خون دل مسلم</h2>
+            <p class="book-title-sub">تحریک پاکستان سے آزادی کشمیر تک</p>
+            
+            <div class="btn-group">
+                <a href="https://docs.google.com/document/d/1frS49cYeZRAUbcfNkGMeqrY7Zvnpvltx7MuwEug0iHk/preview?ui=2&rm=demo" target="_blank" class="action-btn read-btn">آن لائن پڑھیں</a>
+                <a href="https://docs.google.com/document/d/1frS49cYeZRAUbcfNkGMeqrY7Zvnpvltx7MuwEug0iHk/export?format=pdf" class="action-btn download-btn">ڈاؤن لوڈ کریں (PDF)</a>
+            </div>
+        </div>
+
+        <!-- کتاب 2: نیم بسمل -->
+        <div class="book-card" 
+             data-title-ur="نیم بسمل" 
+             data-title-en="The Bleeding Soul"
+             data-sub-ur="The Bleeding Soul" 
+             data-sub-en="Neem Bismil">
+            <img src="bleeding.jpg" alt="نیم بسمل" class="book-img">
+            <h2 class="book-title-main">نیم بسمل</h2>
+            <p class="book-title-sub">The Bleeding Soul</p>
+            
+            <div class="btn-group">
+                <a href="https://www.matrubharti.com/book/19997427/the-bleeding-soul" target="_blank" class="action-btn read-btn">آن لائن پڑھیں</a>
+            </div>
+        </div>
+
+        <!-- کتاب 3: ایک وجود دو دل -->
+        <div class="book-card" 
+             data-title-ur="ایک وجود دو دل" 
+             data-title-en="One Being Two Hearts"
+             data-sub-ur="One Being Two Hearts" 
+             data-sub-en="Aik Wajood Do Dil">
+            <img src="hearts.jpg" alt="ایک وجود دو دل" class="book-img">
+            <h2 class="book-title-main">ایک وجود دو دل</h2>
+            <p class="book-title-sub">One Being Two Hearts</p>
+            
+            <div class="btn-group">
+                <a href="https://www.matrubharti.com/book/19996412/one-being-two-hearts" target="_blank" class="action-btn read-btn">آن لائن پڑھیں</a>
+            </div>
+        </div>
+
+        <!-- کتاب 4: قرطبہ کی شام -->
+        <div class="book-card" 
+             data-title-ur="قرطبہ کی شام" 
+             data-title-en="Dusk Over Qurtaba"
+             data-sub-ur="Dusk Over Qurtaba" 
+             data-sub-en="Qurtaba Ki Shaam">
+            <img src="qurtaba.jpg" alt="قرطبہ کی شام" class="book-img">
+            <h2 class="book-title-main">قرطبہ کی شام</h2>
+            <p class="book-title-sub">Dusk Over Qurtaba</p>
+            
+            <div class="btn-group">
+                <a href="https://www.matrubharti.com/book/19995513/dusk-over-qurtaba" target="_blank" class="action-btn read-btn">آن لائن پڑھیں</a>
+            </div>
+        </div>
+
+    </div>
+    <!-- پانچویں کتاب: قلم کا قیدی -->
+        <div class="book-card" 
+             data-title-ur="قلم کا قیدی" 
+             data-title-en="The Prisoner of the Pen"
+             data-sub-ur="The Prisoner of the Pen" 
+             data-sub-en="Qalam Ka Qaidi">
+            <img src="pen.jpg" alt="قلم کا قیدی" class="book-img">
+            <h2 class="book-title-main">قلم کا قیدی</h2>
+            <p class="book-title-sub">The Prisoner of the Pen</p>
+            
+            <div class="btn-group">
+                <a href="https://www.matrubharti.com/book/19995101/the-prisoner-of-the-pen" target="_blank" class="action-btn read-btn">آن لائن پڑھیں</a>
+            </div>
+        </div>
+
+    <!-- 100% ورکنگ ماسٹر اسکرپٹ -->
+    <script>
+        var currentLang = 'ur';
+
+        function toggleLanguage() {
+            var pageTitle = document.getElementById('page-title');
+            var backBtn = document.getElementById('back-btn');
+            var cards = document.querySelectorAll('.book-card');
+
+            if (currentLang === 'ur') {
+                // ہیڈر کی انگلش
+                if (pageTitle) { pageTitle.innerText = "My Books"; pageTitle.style.fontFamily = "Arial, sans-serif"; }
+                if (backBtn) { backBtn.innerText = "← Home"; backBtn.style.fontFamily = "Arial, sans-serif"; }
+
+                // تمام چاروں کتابوں کو انگلش میں تبدیل کریں
+                cards.forEach(function(card) {
+                    var titleEn = card.getAttribute('data-title-en');
+                    var subEn = card.getAttribute('data-sub-en');
+
+                    var titleMainEl = card.querySelector('.book-title-main');
+                    var titleSubEl = card.querySelector('.book-title-sub');
+                    var readBtn = card.querySelector('.read-btn');
+                    var downloadBtn = card.querySelector('.download-btn');
+
+                    if (titleMainEl && titleEn) {
+                        titleMainEl.innerText = titleEn;
+                        titleMainEl.style.fontFamily = "Arial, sans-serif";
+                    }
+                    if (titleSubEl && subEn) {
+                        titleSubEl.innerText = subEn;
+                    }
+                    if (readBtn) {
+                        readBtn.innerText = "Read Online";
+                        readBtn.style.fontFamily = "Arial, sans-serif";
+                    }
+                    if (downloadBtn) {
+                        downloadBtn.innerText = "Download (PDF)";
+                        downloadBtn.style.fontFamily = "Arial, sans-serif";
+                    }
+                });
+
+                currentLang = 'en';
+            } else {
+                // ہیڈر کی اردو
+                if (pageTitle) { pageTitle.innerText = "میری تصانیف"; pageTitle.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif"; }
+                if (backBtn) { backBtn.innerText = "← ہوم پیج"; backBtn.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif"; }
+
+                // تمام چاروں کتابوں کو اردو میں تبدیل کریں
+                cards.forEach(function(card) {
+                    var titleUr = card.getAttribute('data-title-ur');
+                    var subUr = card.getAttribute('data-sub-ur');
+
+                    var titleMainEl = card.querySelector('.book-title-main');
+                    var titleSubEl = card.querySelector('.book-title-sub');
+                    var readBtn = card.querySelector('.read-btn');
+                    var downloadBtn = card.querySelector('.download-btn');
+
+                    if (titleMainEl && titleUr) {
+                        titleMainEl.innerText = titleUr;
+                        titleMainEl.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif";
+                    }
+                    if (titleSubEl && subUr) {
+                        titleSubEl.innerText = subUr;
+                    }
+                    if (readBtn) {
+                        readBtn.innerText = "آن لائن پڑھیں";
+                        readBtn.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif";
+                    }
+                    if (downloadBtn) {
+                        downloadBtn.innerText = "ڈاؤن لوڈ کریں (PDF)";
+                        downloadBtn.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif";
+                    }
+                });
+
+                currentLang = 'ur';
+            }
+        }
+    </script>
+</body>
+</html>

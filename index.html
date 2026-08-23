@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محمد رضوان رضی - صفحہ اول</title>
+    <style>
+        /* بنیادی اور بیک گراؤنڈ سٹائل */
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'JameelNooriNastaleeqRegular', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* ٹوگل بٹن کا ڈیزائن */
+        .lang-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: transparent;
+            color: #D4AF37;
+            border: 2px solid #D4AF37;
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .lang-btn:hover {
+            background-color: #D4AF37;
+            color: #0f172a;
+        }
+
+        /* کنٹینر اور پروفائل */
+        .container {
+            text-align: center;
+            max-width: 600px;
+            margin-top: 40px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 3px solid #D4AF37;
+            object-fit: cover;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .main-title {
+            color: #D4AF37;
+            font-size: 2.2rem;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        .sub-title {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .intro-text {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 25px;
+            line-height: 1.7;
+            max-width: 500px;
+            padding: 0 10px;
+        }
+
+        /* اصلی بٹنز کا کنٹینر */
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            background-color: #1e293b;
+            color: #f8fafc;
+            text-decoration: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .nav-btn:hover {
+            border-color: #D4AF37;
+            color: #D4AF37;
+            transform: translateY(-2px);
+        }
+
+        /* ریویو اور ای میل سیکشن */
+        .feedback-section {
+            width: 100%;
+            margin-top: 10px;
+            padding: 25px;
+            background-color: rgba(30, 41, 59, 0.7);
+            border: 1px solid #D4AF37;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            box-sizing: border-box;
+        }
+
+        .feedback-title {
+            color: #D4AF37;
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .feedback-text {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .email-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .email-btn {
+            display: inline-block;
+            background-color: transparent;
+            color: #D4AF37;
+            border: 2px solid #D4AF37;
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .email-btn:hover {
+            background-color: #D4AF37;
+            color: #0f172a;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        .email-display {
+            background-color: rgba(15, 23, 42, 0.8);
+            border: 1px dashed #D4AF37;
+            padding: 8px 18px;
+            border-radius: 20px;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            direction: ltr;
+        }
+
+        .copy-btn {
+            background-color: #D4AF37;
+            color: #0f172a;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- زبان کی تبدیلی کا بٹن -->
+    <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
+
+    <div class="container">
+        <!-- پروفائل تصویر -->
+        <img src="profile.jpg" alt="Profile" class="profile-img">
+
+        <!-- نام، ذیلی عنوان اور ادبی تعارف -->
+        <h1 class="main-title" data-ur="محمد رضوان رضی" data-en="Muhammad Rizwan Razzi">محمد رضوان رضی</h1>
+        <p class="sub-title" data-ur="شاعر و مصنف" data-en="Poet & Author">شاعر و مصنف</p>
+        
+        <p class="intro-text" 
+           data-ur="علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر ، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل میں آپ کی خدمت میں حاضر ہیں ۔۔۔۔" 
+           data-en="Welcome to the realm of literature! As an author and poet, I present life's feelings, thoughts, and stories in book form for you....">
+         علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر ، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل میں آپ کی خدمت میں حاضر ہیں ۔
+        </p>
+
+        <!-- نیویگیشن بٹنز -->
+        <div class="nav-buttons">
+            <a href="books.html" class="nav-btn" data-ur="📚 میری کتابیں" data-en="📚 My Books">📚 میری کتابیں</a>
+            <a href="gallery.html" class="nav-btn" data-ur="🖼️ تصویری کلام" data-en="🖼️ Poetry Gallery">🖼️ تصویری کلام</a>
+        </div>
+
+        <!-- ریویو اور رائے کا سیکشن -->
+        <div class="feedback-section">
+            <h3 class="feedback-title" data-ur="آپ کی رائے میرے لیے محترم ہے" data-en="Your Feedback Matters">
+                آپ کی رائے میرے لیے محترم ہے
+            </h3>
+            <p class="feedback-text" 
+               data-ur="تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ یا جائزہ بھیجنے کے لیے ای میل کیجیے۔" 
+               data-en="Send your valuable review, feedback, or thoughts regarding my poetry and books via email.">
+                تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ یا جائزہ بھیجنے کے لیے ای میل کیجیے۔
+            </p>
+            
+            <div class="email-container">
+                <a href="mailto:muhammadrizwanrazzi54@gmail.com?subject=کلام/کتاب%20پر%20تبصرہ%20و%20رائے" 
+                   class="email-btn" 
+                   data-ur="✉️ رائے یا تبصرہ بھیجیں" 
+                   data-en="✉️ Send Review / Feedback">
+                    ✉️ رائے یا تبصرہ بھیجیں
+                </a>
+                
+                <div class="email-display">
+                    <span id="email-text">muhammadrizwanrazzi54@gmail.com</span>
+                    <button onclick="copyEmail()" class="copy-btn" id="copy-btn" data-ur="کاپی کریں" data-en="Copy">کاپی کریں</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- جاوا سکرپٹ -->
+    <script>
+        var currentLang = 'ur';
+
+        function toggleLanguage() {
+            var elements = document.querySelectorAll('[data-ur]');
+            var langBtn = document.getElementById('langBtn');
+            
+            elements.forEach(function(element) {
+                if (currentLang === 'ur') {
+                    element.innerText = element.getAttribute('data-en');
+                    element.style.fontFamily = "Arial, sans-serif";
+                } else {
+                    element.innerText = element.getAttribute('data-ur');
+                    element.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif";
+                }
+            });
+
+            if (currentLang === 'ur') {
+                langBtn.innerText = 'اردو';
+                currentLang = 'en';
+            } else {
+                langBtn.innerText = 'English';
+                currentLang = 'ur';
+            }
+        }
+
+        function copyEmail() {
+            var emailText = document.getElementById("email-text").innerText;
+            navigator.clipboard.writeText(emailText);
+            
+            var copyBtn = document.getElementById("copy-btn");
+            var originalUr = copyBtn.getAttribute('data-ur');
+            var originalEn = copyBtn.getAttribute('data-en');
+            
+            copyBtn.innerText = (currentLang === 'ur') ? "کاپی ہو گیا!" : "Copied!";
+            copyBtn.style.backgroundColor = "#22c55e";
+            copyBtn.style.color = "#ffffff";
+            
+            setTimeout(function() {
+                copyBtn.innerText = (currentLang === 'ur') ? originalUr : originalEn;
+                copyBtn.style.backgroundColor = "#D4AF37";
+                copyBtn.style.color = "#0f172a";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

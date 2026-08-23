@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <title>تصویری کلام | محمد رضوان رضی</title>
+    
+    <!-- جمیل نوری نستعلیق فونٹ -->
+    <link href="https://fontlibrary.org/face/jameel-noori-nastaleeq" rel="stylesheet" type="text/css"/>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: 'JameelNooriNastaleeqRegular', Arial, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ٹاپ بار */
+        .top-bar {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .back-btn {
+            background-color: transparent;
+            color: #D4AF37;
+            border: 2px solid #D4AF37;
+            padding: 8px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #D4AF37;
+            color: #0f172a;
+        }
+
+        .lang-btn {
+            background-color: #B91C1C;
+            color: white;
+            border: 2px solid #D4AF37;
+            padding: 8px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .lang-btn:hover { background-color: #991b1b; }
+
+        /* عنوان */
+        .page-title {
+            color: #D4AF37;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* وضاحت / نوٹ کا شاندار ڈائمینشنل باکس */
+        .gallery-note {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(30, 41, 59, 0.8);
+            border-right: 4px solid #D4AF37;
+            border-left: 4px solid #D4AF37;
+            color: #cbd5e1;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* گیلری گرڈ */
+        .gallery-grid {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .gallery-card {
+            background-color: #1e293b;
+            border: 2px solid #D4AF37;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            height: 320px;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* فل سکرین لائٹ باکس */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 85vh;
+            border: 3px solid #D4AF37;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #D4AF37;
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .close-btn:hover { color: #ffffff; }
+        /* فید-ان اینیمیشن ایفیکٹ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ہر کارڈ پر اینیمیشن کا اطلاق */
+        .gallery-card {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        /* الگ الگ تصاویر کے لیے ہلکا سا ٹائم ڈیلے (خوبصورت تسلسل کے لیے) */
+        .gallery-card:nth-child(1) { animation-delay: 0.1s; }
+        .gallery-card:nth-child(2) { animation-delay: 0.2s; }
+        .gallery-card:nth-child(3) { animation-delay: 0.3s; }
+        .gallery-card:nth-child(4) { animation-delay: 0.4s; }
+        .gallery-card:nth-child(5) { animation-delay: 0.5s; }
+        .gallery-card:nth-child(6) { animation-delay: 0.6s; }
+        .gallery-card:nth-child(7) { animation-delay: 0.7s; }
+        .gallery-card:nth-child(8) { animation-delay: 0.8s; }
+        .gallery-card:nth-child(9) { animation-delay: 0.9s; }
+        .gallery-card:nth-child(10) { animation-delay: 1.0s; }
+    </style>
+</head>
+<body class="notranslate" translate="no">
+
+    <!-- ٹاپ بار -->
+    <div class="top-bar">
+        <a href="index.html" class="back-btn" data-ur="← ہوم پیج" data-en="← Home">← ہوم پیج</a>
+        <button class="lang-btn" onclick="toggleLanguage()">English / اردو</button>
+    </div>
+
+    <!-- عنوان -->
+    <h1 class="page-title" id="gallery-title" data-ur="تصویری کلام" data-en="Poetry Gallery">تصویری کلام</h1>
+
+    <!-- توضیحی نوٹ -->
+    <p class="gallery-note" id="gallery-note" 
+       data-ur="نوٹ: ان غزلوں اور کلاموں میں کچھ کلام ایسے بھی ہیں جو کسی بڑے اور مشہور شاعر کی زمین پر کہے گئے ہیں۔ سب کو الگ سے واضح کرنا پیچیدہ تھا، لہذا یہ مجموعی وضاحت آپ کی توجہ کے لیے ہے۔" 
+       data-en="Note: Some of these verses and poems are composed in the meter (zameen) of renowned master poets. Since specifying each individually is complex, this general note is provided for your understanding.">
+        نوٹ: ان غزلوں اور کلاموں میں کچھ کلام ایسے بھی ہیں جو کسی بڑے اور مشہور شاعر کی زمین پر کہے گئے ہیں۔ سب کو الگ سے واضح کرنا پیچیدہ تھا، لہذا یہ مجموعی وضاحت آپ کی توجہ کے لیے ہے۔
+    </p>
+
+    <!-- تصاویر کا گرڈ (1 سے 10) -->
+    <div class="gallery-grid">
+        <div class="gallery-card" onclick="openLightbox('poetry/poet1.jpg')">
+            <img src="poetry/poet1.jpg" alt="شاعری 1">
+        </div>
+        <div class="gallery-card" onclick="openLightbox('poetry/poet2.jpg')">
+            <img src="poetry/poet2.jpg" alt="شاعری 2">
+        </div>
+        <div class="gallery-card" onclick="openLightbox('poetry/poet3.jpg')">
+            <img src="poetry/poet3.jpg" alt="شاعری 3">
+        </div>
+        <div class="gallery-card" onclick="openLightbox('poetry/poet4.jpg')">
+            <img src="poetry/poet4.jpg" alt="شاعری 4">
+        </div>
+        <div class="gallery-card" onclick="openLightbox('poetry/poet5.jpg')">
+            <img src="poetry/poet5.jpg" alt="شاعری 5">
+        </div>
+        <div class="gallery-card" onclick="openLightbox('poetry/poet6.jpg')">
+            <img src="poetry/poet6.jpg" alt="شاعری 6">
+        </div>
+        <div class="gallery-card" onclick="openLightbox('poetry/poet7.jpg')">
+            <img src="poetry/poet7.jpg" alt="شاعری 7">
+        </div>
+        <div class="gallery-card" onclick="openLightbox('poetry/poet8.jpg')">
+            <img src="poetry/poet8.jpg" alt="شاعری 8">
+        </div>
+        <div class="gallery-card" onclick="openLightbox('poetry/poet9.jpg')">
+            <img src="poetry/poet9.jpg" alt="شاعری 9">
+        </div>
+        <div class="gallery-card" onclick="openLightbox('poetry/poet10.jpg')">
+            <img src="poetry/poet10.jpg" alt="شاعری 10">
+        </div>
+    </div>
+
+    <!-- فل سکرین لائٹ باکس -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="close-btn">&times;</span>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="شاعری فل سکرین">
+    </div>
+
+    <!-- ماسٹر جاوا سکرپٹ -->
+    <script>
+        var currentLang = 'ur';
+
+        function toggleLanguage() {
+            var title = document.getElementById('gallery-title');
+            var note = document.getElementById('gallery-note');
+            var backBtn = document.querySelector('.back-btn');
+
+            if (currentLang === 'ur') {
+                if(title) {
+                    title.innerText = title.getAttribute('data-en');
+                    title.style.fontFamily = "Arial, sans-serif";
+                }
+                if(note) {
+                    note.innerText = note.getAttribute('data-en');
+                    note.style.fontFamily = "Arial, sans-serif";
+                }
+                if(backBtn) {
+                    backBtn.innerText = backBtn.getAttribute('data-en');
+                    backBtn.style.fontFamily = "Arial, sans-serif";
+                }
+                currentLang = 'en';
+            } else {
+                if(title) {
+                    title.innerText = title.getAttribute('data-ur');
+                    title.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif";
+                }
+                if(note) {
+                    note.innerText = note.getAttribute('data-ur');
+                    note.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif";
+                }
+                if(backBtn) {
+                    backBtn.innerText = backBtn.getAttribute('data-ur');
+                    backBtn.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif";
+                }
+                currentLang = 'ur';
+            }
+        }
+
+        function openLightbox(imageSrc) {
+            var lightbox = document.getElementById('lightbox');
+            var lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imageSrc;
+            lightbox.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
