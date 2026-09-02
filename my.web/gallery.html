@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <title>تصویری کلام | محمد رضوان رضی</title>
+    <!-- جمیل نوری نستعلیق فونٹ -->
+    <link href="https://fontlibrary.org/face/jameel-noori-nastaleeq" rel="stylesheet" type="text/css"/>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'JameelNooriNastaleeqRegular', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .header-nav {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .back-btn, .lang-btn {
+            background-color: transparent;
+            color: #D4AF37;
+            border: 2px solid #D4AF37;
+            padding: 8px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 20px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover, .lang-btn:hover { 
+            background-color: #D4AF37; 
+            color: #050505;
+        }
+
+        .page-title {
+            color: #D4AF37;
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .note-text {
+            color: #a1a1aa;
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 35px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* گیلری گرڈ */
+        .gallery-grid {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* صرف تصویر کا کارڈ */
+        .gallery-card {
+            background-color: #121212;
+            border: 2px solid #D4AF37;
+            border-radius: 15px;
+            padding: 10px;
+            width: 280px;
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15);
+            animation: fadeInUp 0.8s ease forwards;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            display: block;
+        }
+
+        /* فید-ان اینیمیشن ایفیکٹ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* لائٹ باکس */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 300;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .full-img {
+            max-width: 90%;
+            max-height: 80%;
+            border: 2px solid #D4AF37;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .close-btn {
+            background-color: #D4AF37;
+            color: #050505;
+            border: none;
+            padding: 8px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="notranslate" translate="no">
+
+    <div class="header-nav">
+        <a href="index.html" class="back-btn" id="back-btn">← ہوم پیج</a>
+        <button class="lang-btn" onclick="toggleLanguage()" id="lang-btn">English / اردو</button>
+    </div>
+
+    <h1 class="page-title" id="page-title">تصویری کلام</h1>
+    <p class="note-text" id="note-text">نوٹ: ان غزلوں اور کلاموں میں کچھ کلام ایسے بھی ہیں جو کسی بڑے اور مشہور شاعر کی زمین پر کہے گئے ہیں۔ سب کو الگ سے واضح کرنا پیچیدہ تھا، لہٰذا مجموعی وضاحت آپ کی توجہ کے لیے۔</p>
+
+    <div class="gallery-grid" id="galleryGrid">
+
+        <!-- آپ کی ۱۰ اصلی تصویریں (صرف تصویر، بغیر کسی نام کے) -->
+        <div class="gallery-card" style="animation-delay: 0.1s;"><img src="poetry/poet1.jpg" class="gallery-img" onclick="openLightbox(this.src)"></div>
+        <div class="gallery-card" style="animation-delay: 0.2s;"><img src="poetry/poet2.jpg" class="gallery-img" onclick="openLightbox(this.src)"></div>
+        <div class="gallery-card" style="animation-delay: 0.3s;"><img src="poetry/poet3.jpg" class="gallery-img" onclick="openLightbox(this.src)"></div>
+        <div class="gallery-card" style="animation-delay: 0.4s;"><img src="poetry/poet4.jpg" class="gallery-img" onclick="openLightbox(this.src)"></div>
+        <div class="gallery-card" style="animation-delay: 0.5s;"><img src="poetry/poet5.jpg" class="gallery-img" onclick="openLightbox(this.src)"></div>
+        <div class="gallery-card" style="animation-delay: 0.6s;"><img src="poetry/poet6.jpg" class="gallery-img" onclick="openLightbox(this.src)"></div>
+        <div class="gallery-card" style="animation-delay: 0.7s;"><img src="poetry/poet7.jpg" class="gallery-img" onclick="openLightbox(this.src)"></div>
+        <div class="gallery-card" style="animation-delay: 0.8s;"><img src="poetry/poet8.jpg" class="gallery-img" onclick="openLightbox(this.src)"></div>
+        <div class="gallery-card" style="animation-delay: 0.9s;"><img src="poetry/poet9.jpg" class="gallery-img" onclick="openLightbox(this.src)"></div>
+        <div class="gallery-card" style="animation-delay: 1.0s;"><img src="poetry/poet10.jpg" class="gallery-img" onclick="openLightbox(this.src)"></div>
+
+    </div>
+
+    <!-- لائٹ باکس -->
+    <div id="lightboxModal" class="lightbox-modal">
+        <button class="close-btn" onclick="closeLightbox()">بند کریں ❌</button>
+        <img id="fullImg" class="full-img" src="" alt="">
+    </div>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        var currentLang = 'ur';
+
+        window.onload = function() {
+            loadFirebasePoetry();
+        };
+
+        // فائر بیس سے آن لائن اپلوڈ تصاویر بغیر کسی نام کے شو کرنا
+        function loadFirebasePoetry() {
+            db.collection("poetry").orderBy("timestamp", "desc").get().then((querySnapshot) => {
+                const grid = document.getElementById("galleryGrid");
+                var delay = 0.1;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+
+                    var cardHtml = `
+                        <div class="gallery-card" style="animation-delay: ${delay}s;">
+                            <img src="${data.imageUrl}" class="gallery-img" onclick="openLightbox(this.src)">
+                        </div>
+                    `;
+                    grid.insertAdjacentHTML('afterbegin', cardHtml);
+                    delay += 0.1;
+                });
+            });
+        }
+
+        function toggleLanguage() {
+            var pageTitle = document.getElementById('page-title');
+            var backBtn = document.getElementById('back-btn');
+            var noteText = document.getElementById('note-text');
+
+            if (currentLang === 'ur') {
+                if (pageTitle) { pageTitle.innerText = "Poetry Gallery"; pageTitle.style.fontFamily = "Arial, sans-serif"; }
+                if (backBtn) { backBtn.innerText = "← Home"; backBtn.style.fontFamily = "Arial, sans-serif"; }
+                if (noteText) { noteText.innerText = "Note: Some verses are written in the meters/style of renowned poets."; noteText.style.fontFamily = "Arial, sans-serif"; }
+                currentLang = 'en';
+            } else {
+                if (pageTitle) { pageTitle.innerText = "تصویری کلام"; pageTitle.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif"; }
+                if (backBtn) { backBtn.innerText = "← ہوم پیج"; backBtn.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif"; }
+                if (noteText) { noteText.innerText = "نوٹ: ان غزلوں اور کلاموں میں کچھ کلام ایسے بھی ہیں جو کسی بڑے اور مشہور شاعر کی زمین پر کہے گئے ہیں۔ سب کو الگ سے واضح کرنا پیچیدہ تھا، لہٰذا مجموعی وضاحت آپ کی توجہ کے لیے۔"; noteText.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif"; }
+                currentLang = 'ur';
+            }
+        }
+
+        function openLightbox(src) {
+            document.getElementById("fullImg").src = src;
+            document.getElementById("lightboxModal").style.display = "flex";
+        }
+
+        function closeLightbox() {
+            document.getElementById("lightboxModal").style.display = "none";
+            document.getElementById("fullImg").src = "";
+        }
+    </script>
+</body>
+</html>

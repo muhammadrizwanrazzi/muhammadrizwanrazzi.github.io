@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محمد رضوان رضی - صفحہ اول</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #f8fafc;
+            font-family: 'JameelNooriNastaleeqRegular', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .lang-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: transparent;
+            color: #D4AF37;
+            border: 2px solid #D4AF37;
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .lang-btn:hover {
+            background-color: #D4AF37;
+            color: #050505;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            margin-top: 40px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 3px solid #D4AF37;
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .main-title {
+            color: #D4AF37;
+            font-size: 2.2rem;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        .sub-title {
+            color: #a1a1aa;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .intro-text {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 25px;
+            line-height: 1.7;
+            max-width: 500px;
+            padding: 0 10px;
+        }
+
+        /* 24 گھنٹے والا اسٹیٹس باکس */
+        .status-box {
+            display: none;
+            background: #121212;
+            border: 1px solid #D4AF37;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            box-sizing: border-box;
+        }
+
+        .status-title {
+            color: #D4AF37;
+            font-size: 1.1rem;
+            margin: 0 0 8px 0;
+            font-weight: bold;
+        }
+
+        .status-content {
+            color: #f1f5f9;
+            font-size: 1.15rem;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .status-img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            border: 1px solid #D4AF37;
+            margin-top: 10px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            background-color: #121212;
+            color: #D4AF37;
+            text-decoration: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            border: 1px solid #D4AF37;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .nav-btn:hover {
+            background-color: #D4AF37;
+            color: #050505;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .feedback-section {
+            width: 100%;
+            margin-top: 10px;
+            padding: 25px;
+            background-color: #121212;
+            border: 1px solid #D4AF37;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            box-sizing: border-box;
+        }
+
+        .feedback-title {
+            color: #D4AF37;
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .feedback-text {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .email-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .email-btn {
+            display: inline-block;
+            background-color: transparent;
+            color: #D4AF37;
+            border: 2px solid #D4AF37;
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .email-btn:hover {
+            background-color: #D4AF37;
+            color: #050505;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        .email-display {
+            background-color: #050505;
+            border: 1px dashed #D4AF37;
+            padding: 8px 18px;
+            border-radius: 20px;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            direction: ltr;
+        }
+
+        .copy-btn {
+            background-color: #D4AF37;
+            color: #050505;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: #ffffff;
+        }
+
+        .admin-trigger {
+            margin-top: 30px;
+            color: #52525b;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .admin-trigger:hover {
+            color: #D4AF37;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            background-color: #121212;
+            border: 2px solid #D4AF37;
+            border-radius: 12px;
+            padding: 25px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .admin-panel {
+            display: none;
+            background-color: #121212;
+            border: 1px solid #D4AF37;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: right;
+        }
+
+        .admin-input, .admin-textarea, .file-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #D4AF37;
+            background-color: #050505;
+            color: #fff;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .admin-btn {
+            background-color: #D4AF37;
+            color: #050505;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+
+        /* In-site PDF Reader Modal */
+        .pdf-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 200;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pdf-viewer {
+            width: 90%;
+            height: 85%;
+            border: 2px solid #D4AF37;
+            border-radius: 8px;
+        }
+
+        .close-pdf {
+            background-color: #D4AF37;
+            color: #050505;
+            border: none;
+            padding: 8px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
+
+    <div class="container">
+        <img src="profile.jpg" alt="Profile" class="profile-img">
+
+        <h1 class="main-title" data-ur="محمد رضوان رضی" data-en="Muhammad Rizwan Razzi">محمد رضوان رضی</h1>
+        <p class="sub-title" data-ur="شاعر و مصنف" data-en="Poet & Author">شاعر و مصنف</p>
+        
+        <p class="intro-text" 
+           data-ur="علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر ، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل میں آپ کی خدمت میں حاضر ہیں ۔۔۔۔" 
+           data-en="Welcome to the realm of literature! As an author and poet, I present life's feelings, thoughts, and stories in book form for you....">
+         علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر ، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل میں آپ کی خدمت میں حاضر ہیں ۔
+        </p>
+
+        <!-- 24 گھنٹے والا اسٹیٹس باکس -->
+        <div id="statusBox" class="status-box">
+            <p class="status-title" data-ur="✨ آج کی بات / تازہ پیغام" data-en="✨ Today's Message">✨ آج کی بات / تازہ پیغام</p>
+            <p id="statusText" class="status-content"></p>
+            <img id="statusImgDisplay" class="status-img" style="display: none;">
+        </div>
+
+        <div class="nav-buttons">
+            <a href="books.html" class="nav-btn" data-ur="📚 میری کتابیں" data-en="📚 My Books">📚 میری کتابیں</a>
+            <a href="gallery.html" class="nav-btn" data-ur="🖼️ تصویری کلام" data-en="🖼️ Poetry Gallery">🖼️ تصویری کلام</a>
+        </div>
+
+        <div class="feedback-section">
+            <h3 class="feedback-title" data-ur="آپ کی رائے میرے لیے محترم ہے" data-en="Your Feedback Matters">
+                آپ کی رائے میرے لیے محترم ہے
+            </h3>
+            <p class="feedback-text" 
+               data-ur="تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ یا جائزہ بھیجنے کے لیے ای میل کیجیے۔" 
+               data-en="Send your valuable review, feedback, or thoughts regarding my poetry and books via email.">
+                تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ یا جائزہ بھیجنے کے لیے ای میل کیجیے۔
+            </p>
+            
+            <div class="email-container">
+                <a href="mailto:muhammadrizwanrazzi54@gmail.com?subject=کلام/کتاب%20پر%20تبصرہ%20و%20رائے" 
+                   class="email-btn" 
+                   data-ur="✉️ رائے یا تبصرہ بھیجیں" 
+                   data-en="✉️ Send Review / Feedback">
+                    ✉️ رائے یا تبصرہ بھیجیں
+                </a>
+                
+                <div class="email-display">
+                    <span id="email-text">muhammadrizwanrazzi54@gmail.com</span>
+                    <button onclick="copyEmail()" class="copy-btn" id="copy-btn" data-ur="کاپی کریں" data-en="Copy">کاپی کریں</button>
+                </div>
+            </div>
+        </div>
+
+        <span class="admin-trigger" onclick="openLoginModal()" data-ur="🔒 Admin Portal" data-en="🔒 Admin Portal">🔒 Admin Portal</span>
+
+        <!-- ایڈمن ڈیش بورڈ پینل -->
+        <div id="adminPanel" class="admin-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+    <h3 style="color: #D4AF37; margin: 0;" data-ur="⚙️ ایڈمن ڈیش بورڈ" data-en="⚙️ Admin Dashboard">⚙️ ایڈمن ڈیش بورڈ</h3>
+    <button onclick="logoutAdmin()" style="background-color: #ef4444; color: #ffffff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem;" data-ur="لاگ آؤٹ 🚪" data-en="Logout 🚪">لاگ آؤٹ 🚪</button>
+</div>
+            
+            <!-- 24 گھنٹے والا اسٹیٹس سیکشن -->
+            <h4 style="color: #D4AF37; margin-bottom: 5px;" data-ur="1. تازہ پیغام (24 Hours Status)" data-en="1. Status (24 Hours)">1. تازہ پیغام (24 Hours Status)</h4>
+            <textarea id="newStatus" class="admin-textarea" rows="2" data-ur-ph="یہاں 24 گھنٹے کے لیے نیا پیغام لکھیں..." data-en-ph="Write status for 24 hours..." placeholder="یہاں 24 گھنٹے کے لیے نیا پیغام لکھیں..."></textarea>
+            <label style="color: #cbd5e1;" data-ur="تصویر منتخب کریں (آپشنل):" data-en="Select Image (Optional):">تصویر منتخب کریں (آپشنل):</label>
+            <input type="file" id="statusImgInput" class="file-input" accept="image/*">
+           <button onclick="saveStatus()" class="admin-btn" data-ur="پوسٹ کریں (Status)" data-en="Post Status">پوسٹ کریں (Status)</button>
+<button onclick="deleteStatus()" class="admin-btn" style="background-color: #ef4444; color: #ffffff; margin-top: 8px;" data-ur="اسٹیٹس ختم کریں (Delete)" data-en="Delete Status">اسٹیٹس ختم کریں (Delete)</button>
+
+            <hr style="border: 0.5px solid #334155; margin: 20px 0;">
+
+            <!-- 2. تصویری کلام اپلوڈ سیکشن -->
+<div style="background-color: #121212; border: 2px solid #D4AF37; border-radius: 12px; padding: 15px; margin-top: 20px;">
+    <h4 style="color: #D4AF37; margin-bottom: 10px;" data-ur="2. تصویری کلام اپلوڈ کریں" data-en="2. Upload Poetry Image">2. تصویری کلام اپلوڈ کریں</h4>
+    
+    <label style="color: #cbd5e1; display: block; margin-bottom: 5px;" data-ur="تصویر منتخب کریں (JPG / PNG):" data-en="Select Image (JPG / PNG):">تصویر منتخب کریں (JPG / PNG):</label>
+    <input type="file" id="poetryImageInput" accept="image/*" class="file-input" style="width: 100%; margin-bottom: 12px;">
+    
+    <button onclick="uploadPoetryImage()" class="admin-btn" style="width: 100%;" data-ur="اپلوڈ کریں 📤" data-en="Upload 📤">اپلوڈ کریں 📤</button>
+    
+    <p id="poetryStatus" style="text-align: center; margin-top: 8px; font-weight: bold;"></p>
+</div>
+
+<hr style="border: 0.5px solid #334155; margin: 20px 0;">
+
+            <!-- نئی کتاب کا اندراج -->
+            <h4 style="color: #D4AF37; margin-bottom: 5px;" data-ur="3. نئی کتاب کا اندراج" data-en="2. Upload New Book">2. نئی کتاب کا اندراج</h4>
+            <label style="color: #cbd5e1;" data-ur="کتاب کا نام:" data-en="Book Title:">کتاب کا نام:</label>
+            <input type="text" id="bookTitle" class="admin-input" data-ur-ph="مثلاً: نیم بسمل" data-en-ph="e.g. Neem Bismil" placeholder="مثلاً: نیم بسمل">
+
+            <label style="color: #cbd5e1;" data-ur="کتاب کی تفصیل:" data-en="Book Description:">کتاب کی تفصیل:</label>
+            <textarea id="bookDesc" class="admin-textarea" rows="2" data-ur-ph="مختصر تعارف..." data-en-ph="Brief intro..." placeholder="مختصر تعارف..."></textarea>
+
+            <label style="color: #cbd5e1;" data-ur="کور فوٹو اپلوڈ کریں:" data-en="Upload Cover Photo:">کور فوٹو اپلوڈ کریں:</label>
+            <input type="file" id="bookCoverInput" class="file-input" accept="image/*">
+
+            <label style="color: #cbd5e1;" data-ur="پی ڈی ایف فائل اپلوڈ کریں:" data-en="Upload PDF File:">پی ڈی ایف فائل اپلوڈ کریں:</label>
+            <input type="file" id="bookPdfInput" class="file-input" accept="application/pdf">
+
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="showReadBtn" checked> <span data-ur="آن لائن پڑھیں بٹن" data-en="Read Online Button">آن لائن پڑھیں بٹن</span></label>
+                <label><input type="checkbox" id="showDownloadBtn" checked> <span data-ur="ڈاؤن لوڈ بٹن" data-en="Download Button">ڈاؤن لوڈ بٹن</span></label>
+            </div>
+
+            <button onclick="uploadBook()" class="admin-btn" id="uploadBookBtn" data-ur="کتاب اپلوڈ کریں" data-en="Upload Book">کتاب اپلوڈ کریں</button>
+        </div>
+    </div>
+
+    <!-- لاگ ان پاپ اپ -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="color: #D4AF37; margin-top: 0;" data-ur="🔐 ایڈمن لاگ ان" data-en="🔐 Admin Login">🔐 ایڈمن لاگ ان</h3>
+            <p style="color: #cbd5e1; font-size: 0.9rem;" data-ur="آگے بڑھنے کے لیے پاسورڈ درج کریں:" data-en="Enter password to proceed:">آگے بڑھنے کے لیے پاسورڈ درج کریں:</p>
+            <input type="password" id="adminPassInput" class="admin-input" data-ur-ph="پاسورڈ لکھیں..." data-en-ph="Enter password..." placeholder="پاسورڈ لکھیں..." style="text-align: center;">
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button onclick="submitAdminLogin()" class="admin-btn" data-ur="لاگ ان" data-en="Login">لاگ ان</button>
+                <button onclick="closeLoginModal()" class="admin-btn" style="background-color: #334155; color: #fff;" data-ur="منسوخ" data-en="Cancel">منسوخ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- In-site PDF Reader -->
+    <div id="pdfModal" class="pdf-modal">
+        <button class="close-pdf" onclick="closePdfModal()" data-ur="بند کریں ❌" data-en="Close ❌">بند کریں ❌</button>
+        <iframe id="pdfViewer" class="pdf-viewer"></iframe>
+    </div>
+
+    <script>
+        // Firebase Configuration (Replace with your actual Firebase Keys)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        var currentLang = 'ur';
+
+        window.onload = function() {
+            checkStatus();
+        };
+
+        function toggleLanguage() {
+            var elements = document.querySelectorAll('[data-ur]');
+            var langBtn = document.getElementById('langBtn');
+            
+            elements.forEach(function(element) {
+                if (currentLang === 'ur') {
+                    element.innerText = element.getAttribute('data-en');
+                    element.style.fontFamily = "Arial, sans-serif";
+                } else {
+                    element.innerText = element.getAttribute('data-ur');
+                    element.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif";
+                }
+            });
+
+            // Placeholder Language Toggle
+            var inputs = document.querySelectorAll('[data-ur-ph]');
+            inputs.forEach(function(input) {
+                if (currentLang === 'ur') {
+                    input.placeholder = input.getAttribute('data-en-ph');
+                } else {
+                    input.placeholder = input.getAttribute('data-ur-ph');
+                }
+            });
+
+            if (currentLang === 'ur') {
+                langBtn.innerText = 'اردو';
+                currentLang = 'en';
+            } else {
+                langBtn.innerText = 'English';
+                currentLang = 'ur';
+            }
+        }
+
+        function copyEmail() {
+            var emailText = document.getElementById("email-text").innerText;
+            navigator.clipboard.writeText(emailText);
+            
+            var copyBtn = document.getElementById("copy-btn");
+            var originalUr = copyBtn.getAttribute('data-ur');
+            var originalEn = copyBtn.getAttribute('data-en');
+            
+            copyBtn.innerText = (currentLang === 'ur') ? "کاپی ہو گیا!" : "Copied!";
+            copyBtn.style.backgroundColor = "#22c55e";
+            copyBtn.style.color = "#ffffff";
+            
+            setTimeout(function() {
+                copyBtn.innerText = (currentLang === 'ur') ? originalUr : originalEn;
+                copyBtn.style.backgroundColor = "#D4AF37";
+                copyBtn.style.color = "#050505";
+            }, 2000);
+        }
+
+        function openLoginModal() {
+            document.getElementById("loginModal").style.display = "flex";
+            document.getElementById("adminPassInput").value = "";
+        }
+
+        function closeLoginModal() {
+            document.getElementById("loginModal").style.display = "none";
+        }
+
+       function submitAdminLogin() {
+    var passInput = document.getElementById("adminPassInput").value;
+    
+    if (passInput === "rizwanrazzi@2026") {
+        alert(currentLang === 'ur' ? "لاگ ان کامیاب!" : "Login Successful!");
+        closeLoginModal();
+        document.getElementById("adminPanel").style.display = "block";
+    } else {
+        alert(currentLang === 'ur' ? "غلط پاسورڈ!" : "Wrong Password!");
+    }
+}
+function logoutAdmin() {
+            document.getElementById("adminPanel").style.display = "none";
+            alert(currentLang === 'ur' ? "آپ کامیاب لاگ آؤٹ ہو چکے ہیں!" : "You have logged out successfully!");
+        }
+        /* 24 گھنٹے والا اسٹیٹس (تصویر + تحریر) */
+        function saveStatus() {
+            var text = document.getElementById("newStatus").value;
+            var file = document.getElementById("statusImgInput").files[0];
+
+            if (!text && !file) return;
+
+            var expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000);
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem("user_status_img", e.target.result);
+                    localStorage.setItem("user_status", text);
+                    localStorage.setItem("status_expiry", expiryTime);
+                    applyStatusUI(text, e.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                localStorage.setItem("user_status", text);
+                localStorage.removeItem("user_status_img");
+                localStorage.setItem("status_expiry", expiryTime);
+                applyStatusUI(text, null);
+            }
+
+            alert(currentLang === 'ur' ? "اسٹیٹس 24 گھنٹے کے لیے لائیو ہو گیا!" : "Status live for 24 hours!");
+            document.getElementById("newStatus").value = "";
+            document.getElementById("statusImgInput").value = "";
+        }
+
+        function checkStatus() {
+            var savedStatus = localStorage.getItem("user_status");
+            var savedImg = localStorage.getItem("user_status_img");
+            var expiry = localStorage.getItem("status_expiry");
+            var now = new Date().getTime();
+
+            if ((savedStatus || savedImg) && expiry && now < expiry) {
+                applyStatusUI(savedStatus, savedImg);
+            } else {
+                document.getElementById("statusBox").style.display = "none";
+                localStorage.removeItem("user_status");
+                localStorage.removeItem("user_status_img");
+                localStorage.removeItem("status_expiry");
+            }
+        }
+        function deleteStatus() {
+    localStorage.removeItem("user_status");
+    localStorage.removeItem("user_status_img");
+    localStorage.removeItem("status_expiry");
+    document.getElementById("statusBox").style.display = "none";
+    alert(currentLang === 'ur' ? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
+}
+
+        function applyStatusUI(text, imgData) {
+            document.getElementById("statusText").innerText = text || "";
+            var imgElem = document.getElementById("statusImgDisplay");
+            if (imgData) {
+                imgElem.src = imgData;
+                imgElem.style.display = "inline-block";
+            } else {
+                imgElem.style.display = "none";
+            }
+            document.getElementById("statusBox").style.display = "block";
+        }
+
+        /* کتاب اپلوڈنگ فنکشن (Firebase Integration) */
+        async function uploadBook() {
+            var title = document.getElementById("bookTitle").value;
+            var desc = document.getElementById("bookDesc").value;
+            var coverFile = document.getElementById("bookCoverInput").files[0];
+            var pdfFile = document.getElementById("bookPdfInput").files[0];
+            var showRead = document.getElementById("showReadBtn").checked;
+            var showDownload = document.getElementById("showDownloadBtn").checked;
+
+            if (!title || !coverFile || !pdfFile) {
+                alert(currentLang === 'ur' ? "براہ کرم تمام معلومات اور فائلیں شامل کریں!" : "Please fill all details and upload files!");
+                return;
+            }
+
+            var btn = document.getElementById("uploadBookBtn");
+            btn.innerText = currentLang === 'ur' ? "اپلوڈ ہو رہا ہے..." : "Uploading...";
+            btn.disabled = true;
+
+            try {
+                // Upload Cover
+                var coverRef = storage.ref('covers/' + Date.now() + '_' + coverFile.name);
+                await coverRef.put(coverFile);
+                var coverUrl = await coverRef.getDownloadURL();
+
+                // Upload PDF
+                var pdfRef = storage.ref('pdfs/' + Date.now() + '_' + pdfFile.name);
+                await pdfRef.put(pdfFile);
+                var pdfUrl = await pdfRef.getDownloadURL();
+
+                // Save Metadata to Firestore
+                await db.collection("books").add({
+                    title: title,
+                    description: desc,
+                    coverUrl: coverUrl,
+                    pdfUrl: pdfUrl,
+                    showRead: showRead,
+                    showDownload: showDownload,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert(currentLang === 'ur' ? "کتاب کامیابی سے اپلوڈ ہو گئی!" : "Book uploaded successfully!");
+                location.reload();
+            } catch (error) {
+                alert("Error: " + error.message);
+                btn.innerText = currentLang === 'ur' ? "کتاب اپلوڈ کریں" : "Upload Book";
+                btn.disabled = false;
+            }
+        }
+
+        function openPdfViewer(url) {
+            document.getElementById("pdfViewer").src = url;
+            document.getElementById("pdfModal").style.display = "flex";
+        }
+
+        function closePdfModal() {
+            document.getElementById("pdfModal").style.display = "none";
+            document.getElementById("pdfViewer").src = "";
+        }
+        // تصویری کلام اپلوڈ کرنے کا فنکشن
+function uploadPoetryImage() {
+    const fileInput = document.getElementById('poetryImageInput');
+    const statusDiv = document.getElementById('poetryStatus');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert(currentLang === 'ur' ? "براہِ کرم تصویر منتخب کریں!" : "Please select an image!");
+        return;
+    }
+
+    statusDiv.style.color = "#D4AF37";
+    statusDiv.innerText = currentLang === 'ur' ? "تصویر اپلوڈ ہو رہی ہے..." : "Uploading image...";
+
+    // Firebase Storage میں امیج سیو کرنا
+    const storageRef = firebase.storage().ref('poetry/' + Date.now() + '_' + file.name);
+    const uploadTask = storageRef.put(file);
+
+    uploadTask.on('state_changed', 
+        null, 
+        (error) => {
+            statusDiv.style.color = "#ff5252";
+            statusDiv.innerText = (currentLang === 'ur' ? "خرابی: " : "Error: ") + error.message;
+        }, 
+        () => {
+            // Firestore Database میں لنک سیو کرنا
+            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                firebase.firestore().collection("poetry").add({
+                    imageUrl: downloadURL,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    statusDiv.style.color = "#4caf50";
+                    statusDiv.innerText = currentLang === 'ur' ? "تصویری کلام کامیابی سے اپلوڈ ہو گیا! ✅" : "Poetry image uploaded successfully! ✅";
+                    fileInput.value = "";
+                });
+            });
+        }
+    );
+}
+    </script>
+</body>
+</html>
