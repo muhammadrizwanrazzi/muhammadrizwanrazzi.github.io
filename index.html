@@ -586,7 +586,7 @@
             alert(currentLang === 'ur' ? "آپ کامیاب لاگ آؤٹ ہو چکے ہیں!" : "You have logged out successfully!");
         }
 
-        /* 24 گھنٹے والا اسٹیٹس (Cloudinary Integated) */
+        /* 24 گھنٹے والا اسٹیٹس (Cloudinary + Firebase Global Integration) */
         async function saveStatus() {
             var text = document.getElementById("newStatus").value;
             var file = document.getElementById("statusImgInput").files[0];
@@ -594,53 +594,73 @@
             if (!text && !file) return;
 
             var expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000);
+            var imageUrl = "";
 
             if (file) {
                 // Cloudinary پر اپلوڈ کرنے کا عمل
                 var cloudUrl = await uploadToCloudinary(file);
                 if (cloudUrl) {
-                    localStorage.setItem("user_status_img", cloudUrl);
-                    localStorage.setItem("user_status", text);
-                    localStorage.setItem("status_expiry", expiryTime);
-                    applyStatusUI(text, cloudUrl);
+                    imageUrl = cloudUrl;
                 } else {
                     alert(currentLang === 'ur' ? "تصویر اپلوڈ کرنے میں ناکامی ہوئی!" : "Failed to upload image!");
                     return;
                 }
-            } else {
-                localStorage.setItem("user_status", text);
-                localStorage.removeItem("user_status_img");
-                localStorage.setItem("status_expiry", expiryTime);
-                applyStatusUI(text, null);
             }
 
-            alert(currentLang === 'ur' ? "اسٹیٹس 24 گھنٹے کے لیے لائیو ہو گیا!" : "Status live for 24 hours!");
-            document.getElementById("newStatus").value = "";
-            document.getElementById("statusImgInput").value = "";
+            // Firebase Firestore میں اسٹیٹس ڈیٹا سیو کرنا (تاکہ تمام صارفین کے لیے لائیو ہو جائے)
+            try {
+                await db.collection("status").doc("currentStatus").set({
+                    text: text || "",
+                    imageUrl: imageUrl || "",
+                    expiryTime: expiryTime
+                });
+
+                alert(currentLang === 'ur' ? "اسٹیٹس 24 گھنٹے کے لیے لائیو ہو گیا!" : "Status live for 24 hours!");
+                document.getElementById("newStatus").value = "";
+                document.getElementById("statusImgInput").value = "";
+                checkStatus();
+            } catch (error) {
+                alert("Error saving status: " + error.message);
+            }
         }
 
-        function checkStatus() {
-            var savedStatus = localStorage.getItem("user_status");
-            var savedImg = localStorage.getItem("user_status_img");
-            var expiry = localStorage.getItem("status_expiry");
-            var now = new Date().getTime();
+        async function checkStatus() {
+            try {
+                var doc = await db.collection("status").doc("currentStatus").get();
+                if (doc.exists) {
+                    var data = doc.data();
+                    var now = new Date().getTime();
 
-            if ((savedStatus || savedImg) && expiry && now < expiry) {
-                applyStatusUI(savedStatus, savedImg);
-            } else {
+                    if (data.expiryTime && now < data.expiryTime) {
+                        applyStatusUI(data.text, data.imageUrl);
+                    } else {
+                        deleteStatusSilently();
+                    }
+                } else {
+                    document.getElementById("statusBox").style.display = "none";
+                }
+            } catch (error) {
+                console.error("Error checking status:", error);
+            }
+        }
+
+        async function deleteStatus() {
+            try {
+                await db.collection("status").doc("currentStatus").delete();
                 document.getElementById("statusBox").style.display = "none";
-                localStorage.removeItem("user_status");
-                localStorage.removeItem("user_status_img");
-                localStorage.removeItem("status_expiry");
+                alert(currentLang === 'ur' ? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
+            } catch (error) {
+                alert("Error deleting status: " + error.message);
             }
         }
 
-        function deleteStatus() {
-            localStorage.removeItem("user_status");
-            localStorage.removeItem("user_status_img");
-            localStorage.removeItem("status_expiry");
-            document.getElementById("statusBox").style.display = "none";
-            alert(currentLang === 'ur' ? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
+        async function deleteStatusSilently() {
+            try {
+                await db.collection("status").doc("currentStatus").delete();
+                document.getElementById("statusBox").style.display = "none";
+            } catch (error) {
+                console.error("Error deleting expired status:", error);
+            }
         }
 
         function applyStatusUI(text, imgData) {
