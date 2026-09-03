@@ -465,359 +465,284 @@
         <iframe id="pdfViewer" class="pdf-viewer"></iframe>
     </div>
 
-  <script>
-        // Cloudinary Credentials
-        const CLOUD_NAME = "ecuyicge";
-        const UPLOAD_PRESET = "poetry.preset";
+ <!-- Firebase SDKs (Compatibility Scripts) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
-        // Cloudinary Upload Helper Function
-        async function uploadToCloudinary(file) {
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("upload_preset", UPLOAD_PRESET);
+<script>
+    // Firebase Configuration (آپ کی اصلی Keys کنیکٹ کر دی گئی ہیں)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBoeQyEWM87yWKAVAJ9IQonSx2RsfrAj1I",
+        authDomain: "razzi-24272website.firebaseapp.com",
+        projectId: "razzi-24272website",
+        storageBucket: "razzi-24272website.firebasestorage.app",
+        messagingSenderId: "752007825754",
+        appId: "1:752007825754:web:87567c26dd2d11d3a24b63",
+        measurementId: "G-GH8YWH7QGF"
+    };
 
-            try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
-                    method: "POST",
-                    body: formData
-                });
-                const data = await response.json();
-                return data.secure_url || null;
-            } catch (error) {
-                console.error("Cloudinary Upload Error:", error);
-                return null;
-            }
-        }
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+    const storage = firebase.storage();
 
-        // Firebase Initialization (Safe Check to Prevent Crashing)
-        var db = null;
-        var storage = null;
-        try {
-            if (typeof firebase !== 'undefined' && firebase.apps.length === 0) {
-                const firebaseConfig = {
-                    apiKey: "YOUR_API_KEY",
-                    authDomain: "YOUR_PROJECT.firebaseapp.com",
-                    projectId: "YOUR_PROJECT_ID",
-                    storageBucket: "YOUR_PROJECT.appspot.com",
-                    messagingSenderId: "YOUR_SENDER_ID",
-                    appId: "YOUR_APP_ID"
-                };
-                firebase.initializeApp(firebaseConfig);
-            }
-            if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
-                db = firebase.firestore();
-                storage = firebase.storage();
-            }
-        } catch (e) {
-            console.warn("Firebase config is waiting for credentials.", e);
-        }
+    var currentLang = 'ur';
 
-        var currentLang = 'ur';
+    window.onload = function() {
+        listenToLiveStatus(); // لائیو اسٹیٹس آن کر دیا گیا ہے
+    };
 
-        window.onload = function() {
-            checkStatus();
-        };
-
-        function toggleLanguage() {
-            var elements = document.querySelectorAll('[data-ur]');
-            var langBtn = document.getElementById('langBtn');
-            
-            elements.forEach(function(element) {
-                if (currentLang === 'ur') {
-                    element.innerText = element.getAttribute('data-en');
-                    element.style.fontFamily = "Arial, sans-serif";
-                } else {
-                    element.innerText = element.getAttribute('data-ur');
-                    element.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif";
-                }
-            });
-
-            var inputs = document.querySelectorAll('[data-ur-ph]');
-            inputs.forEach(function(input) {
-                if (currentLang === 'ur') {
-                    input.placeholder = input.getAttribute('data-en-ph');
-                } else {
-                    input.placeholder = input.getAttribute('data-ur-ph');
-                }
-            });
-
+    function toggleLanguage() {
+        var elements = document.querySelectorAll('[data-ur]');
+        var langBtn = document.getElementById('langBtn');
+        
+        elements.forEach(function(element) {
             if (currentLang === 'ur') {
-                if (langBtn) langBtn.innerText = 'اردو';
-                currentLang = 'en';
+                element.innerText = element.getAttribute('data-en');
+                element.style.fontFamily = "Arial, sans-serif";
             } else {
-                if (langBtn) langBtn.innerText = 'English';
-                currentLang = 'ur';
+                element.innerText = element.getAttribute('data-ur');
+                element.style.fontFamily = "'JameelNooriNastaleeqRegular', Arial, sans-serif";
             }
-        }
+        });
 
-        function copyEmail() {
-            var emailElem = document.getElementById("email-text");
-            if (!emailElem) return;
-            var emailText = emailElem.innerText;
-            navigator.clipboard.writeText(emailText);
-            
-            var copyBtn = document.getElementById("copy-btn");
-            if (copyBtn) {
-                var originalUr = copyBtn.getAttribute('data-ur');
-                var originalEn = copyBtn.getAttribute('data-en');
-                
-                copyBtn.innerText = (currentLang === 'ur') ? "کاپی ہو گیا!" : "Copied!";
-                copyBtn.style.backgroundColor = "#22c55e";
-                copyBtn.style.color = "#ffffff";
-                
-                setTimeout(function() {
-                    copyBtn.innerText = (currentLang === 'ur') ? originalUr : originalEn;
-                    copyBtn.style.backgroundColor = "#D4AF37";
-                    copyBtn.style.color = "#050505";
-                }, 2000);
-            }
-        }
-
-        function openLoginModal() {
-            var modal = document.getElementById("loginModal");
-            var passInput = document.getElementById("adminPassInput");
-            if (modal) modal.style.display = "flex";
-            if (passInput) passInput.value = "";
-        }
-
-        function closeLoginModal() {
-            var modal = document.getElementById("loginModal");
-            if (modal) modal.style.display = "none";
-        }
-
-        function submitAdminLogin() {
-            var passInput = document.getElementById("adminPassInput");
-            var val = passInput ? passInput.value : "";
-            
-            if (val === "rizwanrazzi@2026") {
-                alert(currentLang === 'ur' ? "لاگ ان کامیاب!" : "Login Successful!");
-                closeLoginModal();
-                var panel = document.getElementById("adminPanel");
-                if (panel) panel.style.display = "block";
+        var inputs = document.querySelectorAll('[data-ur-ph]');
+        inputs.forEach(function(input) {
+            if (currentLang === 'ur') {
+                input.placeholder = input.getAttribute('data-en-ph');
             } else {
-                alert(currentLang === 'ur' ? "غلط پاسورڈ!" : "Wrong Password!");
+                input.placeholder = input.getAttribute('data-ur-ph');
             }
+        });
+
+        if (currentLang === 'ur') {
+            langBtn.innerText = 'اردو';
+            currentLang = 'en';
+        } else {
+            langBtn.innerText = 'English';
+            currentLang = 'ur';
+        }
+    }
+
+    function copyEmail() {
+        var emailText = document.getElementById("email-text").innerText;
+        navigator.clipboard.writeText(emailText);
+        
+        var copyBtn = document.getElementById("copy-btn");
+        var originalUr = copyBtn.getAttribute('data-ur');
+        var originalEn = copyBtn.getAttribute('data-en');
+        
+        copyBtn.innerText = (currentLang === 'ur') ? "کاپی ہو گیا!" : "Copied!";
+        copyBtn.style.backgroundColor = "#22c55e";
+        copyBtn.style.color = "#ffffff";
+        
+        setTimeout(function() {
+            copyBtn.innerText = (currentLang === 'ur') ? originalUr : originalEn;
+            copyBtn.style.backgroundColor = "#D4AF37";
+            copyBtn.style.color = "#050505";
+        }, 2000);
+    }
+
+    function openLoginModal() {
+        document.getElementById("loginModal").style.display = "flex";
+        document.getElementById("adminPassInput").value = "";
+    }
+
+    function closeLoginModal() {
+        document.getElementById("loginModal").style.display = "none";
+    }
+
+    function submitAdminLogin() {
+        var passInput = document.getElementById("adminPassInput").value;
+        if (passInput === "rizwanrazzi@2026") {
+            alert(currentLang === 'ur' ? "لاگ ان کامیاب!" : "Login Successful!");
+            closeLoginModal();
+            document.getElementById("adminPanel").style.display = "block";
+        } else {
+            alert(currentLang === 'ur' ? "غ غلط پاسورڈ!" : "Wrong Password!");
+        }
+    }
+
+    function logoutAdmin() {
+        document.getElementById("adminPanel").style.display = "none";
+        alert(currentLang === 'ur' ? "آپ کامیاب لاگ آؤٹ ہو چکے ہیں!" : "You have logged out successfully!");
+    }
+
+    /* 🔥 24 گھنٹے والا کراس ڈیوائس لائیو اسٹیٹس (Firestore + Storage) 🔥 */
+    async function saveStatus() {
+        var text = document.getElementById("newStatus").value;
+        var file = document.getElementById("statusImgInput").files[0];
+
+        if (!text && !file) {
+            alert(currentLang === 'ur' ? "براہ کرم تحریر یا تصویر شامل کریں!" : "Please add text or image!");
+            return;
         }
 
-        function logoutAdmin() {
-            var panel = document.getElementById("adminPanel");
-            if (panel) panel.style.display = "none";
-            alert(currentLang === 'ur' ? "آپ کامیاب لاگ آؤٹ ہو چکے ہیں!" : "You have logged out successfully!");
-        }
+        var expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 گھنٹے کا وقت
+        var imageUrl = "";
 
-        /* 24 گھنٹے والا اسٹیٹس - Cloudinary اپلوڈ اور ڈسپلے */
-        async function saveStatus() {
-            var textInput = document.getElementById("newStatus");
-            var fileInput = document.getElementById("statusImgInput");
-            
-            var text = textInput ? textInput.value.trim() : "";
-            var file = (fileInput && fileInput.files) ? fileInput.files[0] : null;
-
-            if (!text && !file) {
-                alert(currentLang === 'ur' ? "براہ کرم کچھ متن یا تصویر شامل کریں!" : "Please add text or image!");
-                return;
-            }
-
-            var expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000);
-            var imageUrl = "";
-
+        try {
             if (file) {
-                alert(currentLang === 'ur' ? "تصویر اپلوڈ ہو رہی ہے، براہِ کرم انتظار کریں..." : "Uploading image, please wait...");
-                imageUrl = await uploadToCloudinary(file);
-                if (!imageUrl) {
-                    alert(currentLang === 'ur' ? "تصویر اپلوڈ کرنے میں ناکامی ہوئی!" : "Failed to upload image!");
-                    return;
-                }
+                var storageRef = storage.ref('status_images/' + Date.now() + '_' + file.name);
+                await storageRef.put(file);
+                imageUrl = await storageRef.getDownloadURL();
             }
 
-            var statusData = {
+            // لائیو ڈیٹا بیس میں محفوظ کرنا
+            await db.collection("status").doc("global_status").set({
                 text: text || "",
-                imageUrl: imageUrl || "",
-                expiryTime: expiryTime
-            };
+                imageUrl: imageUrl,
+                expiry: expiryTime,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
 
-            try {
-                localStorage.setItem("global_user_status", JSON.stringify(statusData));
-            } catch(e) {
-                console.error("Storage Error:", e);
-            }
-
-            applyStatusUI(statusData.text, statusData.imageUrl);
-
-            alert(currentLang === 'ur' ? "اسٹیٹس 24 گھنٹے کے لیے لائیو ہو گیا!" : "Status live for 24 hours!");
-            if (textInput) textInput.value = "";
-            if (fileInput) fileInput.value = "";
+            alert(currentLang === 'ur' ? "اسٹیٹس تمام ڈیوائسز کے لیے لائیو ہو گیا!" : "Status live across all devices!");
+            document.getElementById("newStatus").value = "";
+            document.getElementById("statusImgInput").value = "";
+        } catch (error) {
+            alert("Error: " + error.message);
         }
+    }
 
-        function checkStatus() {
-            var rawData = localStorage.getItem("global_user_status");
-            if (rawData) {
-                try {
-                    var data = JSON.parse(rawData);
-                    var now = new Date().getTime();
+    // تمام یوزرز کے لیے اسٹیٹس خود بخود چیک اور اپ ڈیٹ کرنے کا فنکشن
+    function listenToLiveStatus() {
+        db.collection("status").doc("global_status")
+        .onSnapshot((doc) => {
+            if (doc.exists) {
+                var data = doc.data();
+                var now = new Date().getTime();
 
-                    if (data.expiryTime && now < data.expiryTime) {
-                        applyStatusUI(data.text, data.imageUrl);
-                    } else {
-                        deleteStatusSilently();
-                    }
-                } catch (e) {
-                    console.error("Status parsing error:", e);
-                    deleteStatusSilently();
+                // اگر 24 گھنٹے مکمل ہو گئے ہیں تو خود بخود مٹا دیں
+                if (data.expiry && now < data.expiry) {
+                    applyStatusUI(data.text, data.imageUrl);
+                } else {
+                    document.getElementById("statusBox").style.display = "none";
                 }
             } else {
-                var statusBox = document.getElementById("statusBox");
-                if (statusBox) statusBox.style.display = "none";
+                document.getElementById("statusBox").style.display = "none";
             }
-        }
+        }, (error) => {
+            console.log("Status Fetch Error: ", error);
+        });
+    }
 
-        function deleteStatus() {
-            localStorage.removeItem("global_user_status");
-            var statusBox = document.getElementById("statusBox");
-            if (statusBox) statusBox.style.display = "none";
+    function deleteStatus() {
+        db.collection("status").doc("global_status").delete().then(() => {
+            document.getElementById("statusBox").style.display = "none";
             alert(currentLang === 'ur' ? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
+        }).catch((error) => {
+            alert("Error: " + error.message);
+        });
+    }
+
+    function applyStatusUI(text, imgUrl) {
+        document.getElementById("statusText").innerText = text || "";
+        var imgElem = document.getElementById("statusImgDisplay");
+        if (imgUrl) {
+            imgElem.src = imgUrl;
+            imgElem.style.display = "inline-block";
+        } else {
+            imgElem.style.display = "none";
+        }
+        document.getElementById("statusBox").style.display = "block";
+    }
+
+    /* 📚 کتاب اپلوڈنگ فنکشن (Firebase) 📚 */
+    async function uploadBook() {
+        var title = document.getElementById("bookTitle").value;
+        var desc = document.getElementById("bookDesc").value;
+        var coverFile = document.getElementById("bookCoverInput").files[0];
+        var pdfFile = document.getElementById("bookPdfInput").files[0];
+        var showRead = document.getElementById("showReadBtn").checked;
+        var showDownload = document.getElementById("showDownloadBtn").checked;
+
+        if (!title || !coverFile || !pdfFile) {
+            alert(currentLang === 'ur' ? "براہ کرم تمام معلومات اور فائلیں شامل کریں!" : "Please fill all details and upload files!");
+            return;
         }
 
-        function deleteStatusSilently() {
-            localStorage.removeItem("global_user_status");
-            var statusBox = document.getElementById("statusBox");
-            if (statusBox) statusBox.style.display = "none";
+        var btn = document.getElementById("uploadBookBtn");
+        btn.innerText = currentLang === 'ur' ? "اپلوڈ ہو رہا ہے..." : "Uploading...";
+        btn.disabled = true;
+
+        try {
+            var coverRef = storage.ref('covers/' + Date.now() + '_' + coverFile.name);
+            await coverRef.put(coverFile);
+            var coverUrl = await coverRef.getDownloadURL();
+
+            var pdfRef = storage.ref('pdfs/' + Date.now() + '_' + pdfFile.name);
+            await pdfRef.put(pdfFile);
+            var pdfUrl = await pdfRef.getDownloadURL();
+
+            await db.collection("books").add({
+                title: title,
+                description: desc,
+                coverUrl: coverUrl,
+                pdfUrl: pdfUrl,
+                showRead: showRead,
+                showDownload: showDownload,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            alert(currentLang === 'ur' ? "کتاب کامیابی سے اپلوڈ ہو گئی!" : "Book uploaded successfully!");
+            location.reload();
+        } catch (error) {
+            alert("Error: " + error.message);
+            btn.innerText = currentLang === 'ur' ? "کتاب اپلوڈ کریں" : "Upload Book";
+            btn.disabled = false;
+        }
+    }
+
+    function openPdfViewer(url) {
+        document.getElementById("pdfViewer").src = url;
+        document.getElementById("pdfModal").style.display = "flex";
+    }
+
+    function closePdfModal() {
+        document.getElementById("pdfModal").style.display = "none";
+        document.getElementById("pdfViewer").src = "";
+    }
+
+    /* 🖼️ تصویری کلام اپلوڈ کرنے کا فنکشن (فوٹو گیلری) 🖼️ */
+    function uploadPoetryImage() {
+        const fileInput = document.getElementById('poetryImageInput');
+        const statusDiv = document.getElementById('poetryStatus');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert(currentLang === 'ur' ? "براہِ کرم تصویر منتخب کریں!" : "Please select an image!");
+            return;
         }
 
-        function applyStatusUI(text, imgData) {
-            var textElem = document.getElementById("statusText");
-            var imgElem = document.getElementById("statusImgDisplay");
-            var statusBox = document.getElementById("statusBox");
+        statusDiv.style.color = "#D4AF37";
+        statusDiv.innerText = currentLang === 'ur' ? "تصویر اپلوڈ ہو رہی ہے..." : "Uploading image...";
 
-            if (textElem) textElem.innerText = text || "";
-            if (imgElem) {
-                if (imgData) {
-                    imgElem.src = imgData;
-                    imgElem.style.display = "inline-block";
-                } else {
-                    imgElem.style.display = "none";
-                }
-            }
-            if (statusBox) statusBox.style.display = "block";
-        }
+        const storageRef = storage.ref('poetry/' + Date.now() + '_' + file.name);
+        const uploadTask = storageRef.put(file);
 
-        /* کتاب اپلوڈنگ فنکشن */
-        async function uploadBook() {
-            if (!storage || !db) {
-                alert(currentLang === 'ur' ? "Firebase کی ترتیبات مکمل نہیں ہیں!" : "Firebase config is not set up properly!");
-                return;
-            }
-
-            var title = document.getElementById("bookTitle").value;
-            var desc = document.getElementById("bookDesc").value;
-            var coverFile = document.getElementById("bookCoverInput").files[0];
-            var pdfFile = document.getElementById("bookPdfInput").files[0];
-            var showRead = document.getElementById("showReadBtn").checked;
-            var showDownload = document.getElementById("showDownloadBtn").checked;
-
-            if (!title || !coverFile || !pdfFile) {
-                alert(currentLang === 'ur' ? "براہ کرم تمام معلومات اور فائلیں شامل کریں!" : "Please fill all details and upload files!");
-                return;
-            }
-
-            var btn = document.getElementById("uploadBookBtn");
-            if (btn) {
-                btn.innerText = currentLang === 'ur' ? "اپلوڈ ہو رہا ہے..." : "Uploading...";
-                btn.disabled = true;
-            }
-
-            try {
-                var coverRef = storage.ref('covers/' + Date.now() + '_' + coverFile.name);
-                await coverRef.put(coverFile);
-                var coverUrl = await coverRef.getDownloadURL();
-
-                var pdfRef = storage.ref('pdfs/' + Date.now() + '_' + pdfFile.name);
-                await pdfRef.put(pdfFile);
-                var pdfUrl = await pdfRef.getDownloadURL();
-
-                await db.collection("books").add({
-                    title: title,
-                    description: desc,
-                    coverUrl: coverUrl,
-                    pdfUrl: pdfUrl,
-                    showRead: showRead,
-                    showDownload: showDownload,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                alert(currentLang === 'ur' ? "کتاب کامیابی سے اپلوڈ ہو گئی!" : "Book uploaded successfully!");
-                location.reload();
-            } catch (error) {
-                alert("Error: " + error.message);
-                if (btn) {
-                    btn.innerText = currentLang === 'ur' ? "کتاب اپلوڈ کریں" : "Upload Book";
-                    btn.disabled = false;
-                }
-            }
-        }
-
-        function openPdfViewer(url) {
-            var viewer = document.getElementById("pdfViewer");
-            var modal = document.getElementById("pdfModal");
-            if (viewer) viewer.src = url;
-            if (modal) modal.style.display = "flex";
-        }
-
-        function closePdfModal() {
-            var viewer = document.getElementById("pdfViewer");
-            var modal = document.getElementById("pdfModal");
-            if (modal) modal.style.display = "none";
-            if (viewer) viewer.src = "";
-        }
-
-        // تصویری کلام اپلوڈ کرنے کا فنکشن
-        function uploadPoetryImage() {
-            if (!storage || !db) {
-                alert(currentLang === 'ur' ? "Firebase کی ترتیبات مکمل نہیں ہیں!" : "Firebase config is not set up properly!");
-                return;
-            }
-
-            const fileInput = document.getElementById('poetryImageInput');
-            const statusDiv = document.getElementById('poetryStatus');
-            const file = fileInput ? fileInput.files[0] : null;
-
-            if (!file) {
-                alert(currentLang === 'ur' ? "براہِ کرم تصویر منتخب کریں!" : "Please select an image!");
-                return;
-            }
-
-            if (statusDiv) {
-                statusDiv.style.color = "#D4AF37";
-                statusDiv.innerText = currentLang === 'ur' ? "تصویر اپلوڈ ہو رہی ہے..." : "Uploading image...";
-            }
-
-            const storageRef = storage.ref('poetry/' + Date.now() + '_' + file.name);
-            const uploadTask = storageRef.put(file);
-
-            uploadTask.on('state_changed', 
-                null, 
-                (error) => {
-                    if (statusDiv) {
-                        statusDiv.style.color = "#ff5252";
-                        statusDiv.innerText = (currentLang === 'ur' ? "خرابی: " : "Error: ") + error.message;
-                    }
-                }, 
-                () => {
-                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                        db.collection("poetry").add({
-                            imageUrl: downloadURL,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        }).then(() => {
-                            if (statusDiv) {
-                                statusDiv.style.color = "#4caf50";
-                                statusDiv.innerText = currentLang === 'ur' ? "تصویری کلام کامیابی سے اپلوڈ ہو گیا! ✅" : "Poetry image uploaded successfully! ✅";
-                            }
-                            if (fileInput) fileInput.value = "";
-                        });
+        uploadTask.on('state_changed', 
+            null, 
+            (error) => {
+                statusDiv.style.color = "#ff5252";
+                statusDiv.innerText = (currentLang === 'ur' ? "خرابی: " : "Error: ") + error.message;
+            }, 
+            () => {
+                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                    db.collection("poetry").add({
+                        imageUrl: downloadURL,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        statusDiv.style.color = "#4caf50";
+                        statusDiv.innerText = currentLang === 'ur' ? "تصویری کلام کامیابی سے اپلوڈ ہو گیا! ✅" : "Poetry image uploaded successfully! ✅";
+                        fileInput.value = "";
                     });
-                }
-            );
-        }
+                });
+            }
+        );
+    }
 </script>
 </body>
 </html>
