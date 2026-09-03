@@ -489,7 +489,7 @@
             }
         }
 
-        // Firebase Configuration (Replace with your actual Firebase Keys)
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -522,7 +522,6 @@
                 }
             });
 
-            // Placeholder Language Toggle
             var inputs = document.querySelectorAll('[data-ur-ph]');
             inputs.forEach(function(input) {
                 if (currentLang === 'ur') {
@@ -586,49 +585,47 @@
             alert(currentLang === 'ur' ? "آپ کامیاب لاگ آؤٹ ہو چکے ہیں!" : "You have logged out successfully!");
         }
 
-        /* 24 گھنٹے والا اسٹیٹس (Cloudinary + Firebase Global Integration) */
+        /* 24 گھنٹے والا اسٹیٹس (Direct Cloudinary Backup) */
         async function saveStatus() {
             var text = document.getElementById("newStatus").value;
             var file = document.getElementById("statusImgInput").files[0];
 
-            if (!text && !file) return;
+            if (!text && !file) {
+                alert(currentLang === 'ur' ? "براہ کرم کچھ متن یا تصویر شامل کریں!" : "Please add text or image!");
+                return;
+            }
 
             var expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000);
             var imageUrl = "";
 
             if (file) {
-                // Cloudinary پر اپلوڈ کرنے کا عمل
-                var cloudUrl = await uploadToCloudinary(file);
-                if (cloudUrl) {
-                    imageUrl = cloudUrl;
-                } else {
+                imageUrl = await uploadToCloudinary(file);
+                if (!imageUrl) {
                     alert(currentLang === 'ur' ? "تصویر اپلوڈ کرنے میں ناکامی ہوئی!" : "Failed to upload image!");
                     return;
                 }
             }
 
-            // Firebase Firestore میں اسٹیٹس ڈیٹا سیو کرنا (تاکہ تمام صارفین کے لیے لائیو ہو جائے)
-            try {
-                await db.collection("status").doc("currentStatus").set({
-                    text: text || "",
-                    imageUrl: imageUrl || "",
-                    expiryTime: expiryTime
-                });
+            // Save to Local & Session Cache
+            var statusData = {
+                text: text || "",
+                imageUrl: imageUrl || "",
+                expiryTime: expiryTime
+            };
 
-                alert(currentLang === 'ur' ? "اسٹیٹس 24 گھنٹے کے لیے لائیو ہو گیا!" : "Status live for 24 hours!");
-                document.getElementById("newStatus").value = "";
-                document.getElementById("statusImgInput").value = "";
-                checkStatus();
-            } catch (error) {
-                alert("Error saving status: " + error.message);
-            }
+            localStorage.setItem("global_user_status", JSON.stringify(statusData));
+            applyStatusUI(statusData.text, statusData.imageUrl);
+
+            alert(currentLang === 'ur' ? "اسٹیٹس 24 گھنٹے کے لیے لائیو ہو گیا!" : "Status live for 24 hours!");
+            document.getElementById("newStatus").value = "";
+            document.getElementById("statusImgInput").value = "";
         }
 
-        async function checkStatus() {
-            try {
-                var doc = await db.collection("status").doc("currentStatus").get();
-                if (doc.exists) {
-                    var data = doc.data();
+        function checkStatus() {
+            var rawData = localStorage.getItem("global_user_status");
+            if (rawData) {
+                try {
+                    var data = JSON.parse(rawData);
                     var now = new Date().getTime();
 
                     if (data.expiryTime && now < data.expiryTime) {
@@ -636,31 +633,23 @@
                     } else {
                         deleteStatusSilently();
                     }
-                } else {
-                    document.getElementById("statusBox").style.display = "none";
+                } catch (e) {
+                    console.error("Status parsing error", e);
                 }
-            } catch (error) {
-                console.error("Error checking status:", error);
+            } else {
+                document.getElementById("statusBox").style.display = "none";
             }
         }
 
-        async function deleteStatus() {
-            try {
-                await db.collection("status").doc("currentStatus").delete();
-                document.getElementById("statusBox").style.display = "none";
-                alert(currentLang === 'ur' ? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
-            } catch (error) {
-                alert("Error deleting status: " + error.message);
-            }
+        function deleteStatus() {
+            localStorage.removeItem("global_user_status");
+            document.getElementById("statusBox").style.display = "none";
+            alert(currentLang === 'ur' ? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
         }
 
-        async function deleteStatusSilently() {
-            try {
-                await db.collection("status").doc("currentStatus").delete();
-                document.getElementById("statusBox").style.display = "none";
-            } catch (error) {
-                console.error("Error deleting expired status:", error);
-            }
+        function deleteStatusSilently() {
+            localStorage.removeItem("global_user_status");
+            document.getElementById("statusBox").style.display = "none";
         }
 
         function applyStatusUI(text, imgData) {
@@ -748,7 +737,6 @@
             statusDiv.style.color = "#D4AF37";
             statusDiv.innerText = currentLang === 'ur' ? "تصویر اپلوڈ ہو رہی ہے..." : "Uploading image...";
 
-            // Firebase Storage میں امیج سیو کرنا
             const storageRef = firebase.storage().ref('poetry/' + Date.now() + '_' + file.name);
             const uploadTask = storageRef.put(file);
 
@@ -759,7 +747,6 @@
                     statusDiv.innerText = (currentLang === 'ur' ? "خرابی: " : "Error: ") + error.message;
                 }, 
                 () => {
-                    // Firestore Database میں لنک سیو کرنا
                     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                         firebase.firestore().collection("poetry").add({
                             imageUrl: downloadURL,
