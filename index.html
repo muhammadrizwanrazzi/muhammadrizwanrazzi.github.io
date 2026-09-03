@@ -465,7 +465,30 @@
         <iframe id="pdfViewer" class="pdf-viewer"></iframe>
     </div>
 
-    <script>
+   <script>
+        // Cloudinary Credentials
+        const CLOUD_NAME = "ecuyicge";
+        const UPLOAD_PRESET = "poetry.preset";
+
+        // Cloudinary Upload Helper Function
+        async function uploadToCloudinary(file) {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", UPLOAD_PRESET);
+
+            try {
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await response.json();
+                return data.secure_url || null;
+            } catch (error) {
+                console.error("Cloudinary Upload Error:", error);
+                return null;
+            }
+        }
+
         // Firebase Configuration (Replace with your actual Firebase Keys)
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
@@ -546,23 +569,25 @@
             document.getElementById("loginModal").style.display = "none";
         }
 
-       function submitAdminLogin() {
-    var passInput = document.getElementById("adminPassInput").value;
-    
-    if (passInput === "rizwanrazzi@2026") {
-        alert(currentLang === 'ur' ? "لاگ ان کامیاب!" : "Login Successful!");
-        closeLoginModal();
-        document.getElementById("adminPanel").style.display = "block";
-    } else {
-        alert(currentLang === 'ur' ? "غلط پاسورڈ!" : "Wrong Password!");
-    }
-}
-function logoutAdmin() {
+        function submitAdminLogin() {
+            var passInput = document.getElementById("adminPassInput").value;
+            
+            if (passInput === "rizwanrazzi@2026") {
+                alert(currentLang === 'ur' ? "لاگ ان کامیاب!" : "Login Successful!");
+                closeLoginModal();
+                document.getElementById("adminPanel").style.display = "block";
+            } else {
+                alert(currentLang === 'ur' ? "غلط پاسورڈ!" : "Wrong Password!");
+            }
+        }
+
+        function logoutAdmin() {
             document.getElementById("adminPanel").style.display = "none";
             alert(currentLang === 'ur' ? "آپ کامیاب لاگ آؤٹ ہو چکے ہیں!" : "You have logged out successfully!");
         }
-        /* 24 گھنٹے والا اسٹیٹس (تصویر + تحریر) */
-        function saveStatus() {
+
+        /* 24 گھنٹے والا اسٹیٹس (Cloudinary Integated) */
+        async function saveStatus() {
             var text = document.getElementById("newStatus").value;
             var file = document.getElementById("statusImgInput").files[0];
 
@@ -571,14 +596,17 @@ function logoutAdmin() {
             var expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000);
 
             if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    localStorage.setItem("user_status_img", e.target.result);
+                // Cloudinary پر اپلوڈ کرنے کا عمل
+                var cloudUrl = await uploadToCloudinary(file);
+                if (cloudUrl) {
+                    localStorage.setItem("user_status_img", cloudUrl);
                     localStorage.setItem("user_status", text);
                     localStorage.setItem("status_expiry", expiryTime);
-                    applyStatusUI(text, e.target.result);
-                };
-                reader.readAsDataURL(file);
+                    applyStatusUI(text, cloudUrl);
+                } else {
+                    alert(currentLang === 'ur' ? "تصویر اپلوڈ کرنے میں ناکامی ہوئی!" : "Failed to upload image!");
+                    return;
+                }
             } else {
                 localStorage.setItem("user_status", text);
                 localStorage.removeItem("user_status_img");
@@ -606,13 +634,14 @@ function logoutAdmin() {
                 localStorage.removeItem("status_expiry");
             }
         }
+
         function deleteStatus() {
-    localStorage.removeItem("user_status");
-    localStorage.removeItem("user_status_img");
-    localStorage.removeItem("status_expiry");
-    document.getElementById("statusBox").style.display = "none";
-    alert(currentLang === 'ur' ? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
-}
+            localStorage.removeItem("user_status");
+            localStorage.removeItem("user_status_img");
+            localStorage.removeItem("status_expiry");
+            document.getElementById("statusBox").style.display = "none";
+            alert(currentLang === 'ur' ? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
+        }
 
         function applyStatusUI(text, imgData) {
             document.getElementById("statusText").innerText = text || "";
@@ -684,45 +713,46 @@ function logoutAdmin() {
             document.getElementById("pdfModal").style.display = "none";
             document.getElementById("pdfViewer").src = "";
         }
+
         // تصویری کلام اپلوڈ کرنے کا فنکشن
-function uploadPoetryImage() {
-    const fileInput = document.getElementById('poetryImageInput');
-    const statusDiv = document.getElementById('poetryStatus');
-    const file = fileInput.files[0];
+        function uploadPoetryImage() {
+            const fileInput = document.getElementById('poetryImageInput');
+            const statusDiv = document.getElementById('poetryStatus');
+            const file = fileInput.files[0];
 
-    if (!file) {
-        alert(currentLang === 'ur' ? "براہِ کرم تصویر منتخب کریں!" : "Please select an image!");
-        return;
-    }
+            if (!file) {
+                alert(currentLang === 'ur' ? "براہِ کرم تصویر منتخب کریں!" : "Please select an image!");
+                return;
+            }
 
-    statusDiv.style.color = "#D4AF37";
-    statusDiv.innerText = currentLang === 'ur' ? "تصویر اپلوڈ ہو رہی ہے..." : "Uploading image...";
+            statusDiv.style.color = "#D4AF37";
+            statusDiv.innerText = currentLang === 'ur' ? "تصویر اپلوڈ ہو رہی ہے..." : "Uploading image...";
 
-    // Firebase Storage میں امیج سیو کرنا
-    const storageRef = firebase.storage().ref('poetry/' + Date.now() + '_' + file.name);
-    const uploadTask = storageRef.put(file);
+            // Firebase Storage میں امیج سیو کرنا
+            const storageRef = firebase.storage().ref('poetry/' + Date.now() + '_' + file.name);
+            const uploadTask = storageRef.put(file);
 
-    uploadTask.on('state_changed', 
-        null, 
-        (error) => {
-            statusDiv.style.color = "#ff5252";
-            statusDiv.innerText = (currentLang === 'ur' ? "خرابی: " : "Error: ") + error.message;
-        }, 
-        () => {
-            // Firestore Database میں لنک سیو کرنا
-            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                firebase.firestore().collection("poetry").add({
-                    imageUrl: downloadURL,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => {
-                    statusDiv.style.color = "#4caf50";
-                    statusDiv.innerText = currentLang === 'ur' ? "تصویری کلام کامیابی سے اپلوڈ ہو گیا! ✅" : "Poetry image uploaded successfully! ✅";
-                    fileInput.value = "";
-                });
-            });
+            uploadTask.on('state_changed', 
+                null, 
+                (error) => {
+                    statusDiv.style.color = "#ff5252";
+                    statusDiv.innerText = (currentLang === 'ur' ? "خرابی: " : "Error: ") + error.message;
+                }, 
+                () => {
+                    // Firestore Database میں لنک سیو کرنا
+                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        firebase.firestore().collection("poetry").add({
+                            imageUrl: downloadURL,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        }).then(() => {
+                            statusDiv.style.color = "#4caf50";
+                            statusDiv.innerText = currentLang === 'ur' ? "تصویری کلام کامیابی سے اپلوڈ ہو گیا! ✅" : "Poetry image uploaded successfully! ✅";
+                            fileInput.value = "";
+                        });
+                    });
+                }
+            );
         }
-    );
-}
-    </script>
+</script>
 </body>
 </html>
