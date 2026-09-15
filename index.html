@@ -9,6 +9,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
+    <!-- Three.js for 3D Background -->
+    <script type="importmap">
+    {"imports": {"three": "https://unpkg.com/three@0.160.0/build/three.module.js"}}
+    </script>
+
     <style>
         body {
             background-color: #050505;
@@ -21,12 +26,43 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
+            overflow-x: hidden;
         }
 
-        .lang-btn {
+        /* 3D Canvas Background */
+        #bg-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* نیا کونے والا چھوٹا گول لوگو */
+       .corner-logo {
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 20px; /* RTL ہے تو دائیں کونے میں */
+            width: 70px;
+            height: 70px;
+            border-radius: 50%; /* گول کرنے کے لیے */
+            border: 2px solid #D4AF37;
+            object-fit: cover;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+            z-index: 10;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+      .lang-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px; /* اب بٹن بائیں طرف شفٹ کر دیا */
             background-color: transparent;
             color: #D4AF37;
             border: 2px solid #D4AF37;
@@ -38,44 +74,51 @@
             z-index: 10;
         }
 
-        .lang-btn:hover {
+      .lang-btn:hover {
             background-color: #D4AF37;
             color: #050505;
         }
 
-        .container {
+      .container {
+            position: relative;
+            z-index: 1;
             text-align: center;
             max-width: 600px;
-            margin-top: 40px;
+            margin-top: 100px; /* اوپر سے سپیس بڑھا دی تاکہ لوگو سے ٹکرائے نہیں */
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        .profile-img {
+      .profile-img {
             width: 130px;
             height: 130px;
             border-radius: 50%;
             border: 3px solid #D4AF37;
             object-fit: cover;
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            transition: transform 0.3s ease;
+        }
+      .profile-img:hover {
+            transform: scale(1.05) rotateY(10deg);
         }
 
-        .main-title {
+      .main-title {
             color: #D4AF37;
             font-size: 2.2rem;
             margin-top: 15px;
             margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
         }
 
-        .sub-title {
+      .sub-title {
             color: #a1a1aa;
             font-size: 1.1rem;
             margin-bottom: 15px;
         }
 
-        .intro-text {
+      .intro-text {
             color: #cbd5e1;
             font-size: 1.1rem;
             margin-top: 0;
@@ -86,9 +129,10 @@
         }
 
         /* 24 گھنٹے والا اسٹیٹس باکس */
-        .status-box {
+      .status-box {
             display: none;
-            background: #121212;
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
             border: 1px solid #D4AF37;
             border-radius: 12px;
             padding: 15px;
@@ -98,21 +142,21 @@
             box-sizing: border-box;
         }
 
-        .status-title {
+      .status-title {
             color: #D4AF37;
             font-size: 1.1rem;
             margin: 0 0 8px 0;
             font-weight: bold;
         }
 
-        .status-content {
+      .status-content {
             color: #f1f5f9;
             font-size: 1.15rem;
             margin: 0;
             line-height: 1.6;
         }
 
-        .status-img {
+      .status-img {
             max-width: 100%;
             max-height: 300px;
             border-radius: 8px;
@@ -120,7 +164,7 @@
             margin-top: 10px;
         }
 
-        .nav-buttons {
+      .nav-buttons {
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -128,8 +172,9 @@
             margin-bottom: 30px;
         }
 
-        .nav-btn {
-            background-color: #121212;
+      .nav-btn {
+            background-color: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
             color: #D4AF37;
             text-decoration: none;
             padding: 14px 20px;
@@ -140,18 +185,19 @@
             display: block;
         }
 
-        .nav-btn:hover {
+      .nav-btn:hover {
             background-color: #D4AF37;
             color: #050505;
-            transform: translateY(-2px);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
         }
 
-        .feedback-section {
+      .feedback-section {
             width: 100%;
             margin-top: 10px;
             padding: 25px;
-            background-color: #121212;
+            background-color: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
             border: 1px solid #D4AF37;
             border-radius: 12px;
             text-align: center;
@@ -159,28 +205,28 @@
             box-sizing: border-box;
         }
 
-        .feedback-title {
+      .feedback-title {
             color: #D4AF37;
             font-size: 1.4rem;
             margin-top: 0;
             margin-bottom: 10px;
         }
 
-        .feedback-text {
+      .feedback-text {
             color: #cbd5e1;
             font-size: 1.05rem;
             margin-bottom: 20px;
             line-height: 1.6;
         }
 
-        .email-container {
+      .email-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 15px;
         }
 
-        .email-btn {
+      .email-btn {
             display: inline-block;
             background-color: transparent;
             color: #D4AF37;
@@ -193,13 +239,13 @@
             transition: all 0.3s ease;
         }
 
-        .email-btn:hover {
+      .email-btn:hover {
             background-color: #D4AF37;
             color: #050505;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
         }
 
-        .email-display {
+      .email-display {
             background-color: #050505;
             border: 1px dashed #D4AF37;
             padding: 8px 18px;
@@ -212,7 +258,7 @@
             direction: ltr;
         }
 
-        .copy-btn {
+      .copy-btn {
             background-color: #D4AF37;
             color: #050505;
             border: none;
@@ -224,22 +270,22 @@
             transition: all 0.2s ease;
         }
 
-        .copy-btn:hover {
+      .copy-btn:hover {
             background-color: #ffffff;
         }
 
-        .admin-trigger {
+      .admin-trigger {
             margin-top: 30px;
             color: #52525b;
             font-size: 0.8rem;
             cursor: pointer;
             text-decoration: none;
         }
-        .admin-trigger:hover {
+      .admin-trigger:hover {
             color: #D4AF37;
         }
 
-        .modal-overlay {
+      .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
@@ -250,7 +296,7 @@
             align-items: center;
         }
 
-        .modal-box {
+      .modal-box {
             background-color: #121212;
             border: 2px solid #D4AF37;
             border-radius: 12px;
@@ -261,9 +307,10 @@
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
         }
 
-        .admin-panel {
+      .admin-panel {
             display: none;
-            background-color: #121212;
+            background-color: rgba(18, 18, 18, 0.9);
+            backdrop-filter: blur(10px);
             border: 1px solid #D4AF37;
             border-radius: 12px;
             padding: 20px;
@@ -273,7 +320,7 @@
             text-align: right;
         }
 
-        .admin-input, .admin-textarea, .file-input {
+      .admin-input,.admin-textarea,.file-input {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
@@ -286,7 +333,7 @@
             font-family: inherit;
         }
 
-        .admin-btn {
+      .admin-btn {
             background-color: #D4AF37;
             color: #050505;
             border: none;
@@ -298,7 +345,7 @@
             font-size: 1rem;
         }
 
-        .checkbox-group {
+      .checkbox-group {
             display: flex;
             gap: 15px;
             margin-bottom: 15px;
@@ -306,7 +353,7 @@
         }
 
         /* In-site PDF Reader Modal */
-        .pdf-modal {
+      .pdf-modal {
             display: none;
             position: fixed;
             top: 0; left: 0;
@@ -318,14 +365,14 @@
             justify-content: center;
         }
 
-        .pdf-viewer {
+      .pdf-viewer {
             width: 90%;
             height: 85%;
             border: 2px solid #D4AF37;
             border-radius: 8px;
         }
 
-        .close-pdf {
+      .close-pdf {
             background-color: #D4AF37;
             color: #050505;
             border: none;
@@ -339,16 +386,23 @@
 </head>
 <body>
 
+    <!-- 3D Background Canvas -->
+    <canvas id="bg-3d"></canvas>
+
     <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
 
+    <!-- نیا کونے والا لوگو -->
+    <img src="logo-razi-3d.png" alt="RAZI Logo" class="corner-logo">
+
     <div class="container">
+
         <img src="profile.jpg" alt="Profile" class="profile-img">
 
         <h1 class="main-title" data-ur="محمد رضوان رضی" data-en="Muhammad Rizwan Razzi">محمد رضوان رضی</h1>
         <p class="sub-title" data-ur="شاعر و مصنف" data-en="Poet & Author">شاعر و مصنف</p>
-        
-        <p class="intro-text" 
-           data-ur="علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر ، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل میں آپ کی خدمت میں حاضر ہیں ۔۔۔۔" 
+
+        <p class="intro-text"
+           data-ur="علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر ، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل میں آپ کی خدمت میں حاضر ہیں ۔"
            data-en="Welcome to the realm of literature! As an author and poet, I present life's feelings, thoughts, and stories in book form for you....">
          علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر ، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل میں آپ کی خدمت میں حاضر ہیں ۔
         </p>
@@ -369,20 +423,20 @@
             <h3 class="feedback-title" data-ur="آپ کی رائے میرے لیے محترم ہے" data-en="Your Feedback Matters">
                 آپ کی رائے میرے لیے محترم ہے
             </h3>
-            <p class="feedback-text" 
-               data-ur="تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ یا جائزہ بھیجنے کے لیے ای میل کیجیے۔" 
+            <p class="feedback-text"
+               data-ur="تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ یا جائزہ بھیجنے کے لیے ای میل کیجیے۔"
                data-en="Send your valuable review, feedback, or thoughts regarding my poetry and books via email.">
                 تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ یا جائزہ بھیجنے کے لیے ای میل کیجیے۔
             </p>
-            
+
             <div class="email-container">
-                <a href="mailto:muhammadrizwanrazzi54@gmail.com?subject=کلام/کتاب%20پر%20تبصرہ%20و%20رائے" 
-                   class="email-btn" 
-                   data-ur="✉️ رائے یا تبصرہ بھیجیں" 
+                <a href="mailto:muhammadrizwanrazzi54@gmail.com?subject=کلام/کتاب%20پر%20تبصرہ%20و%20رائے"
+                   class="email-btn"
+                   data-ur="✉️ رائے یا تبصرہ بھیجیں"
                    data-en="✉️ Send Review / Feedback">
                     ✉️ رائے یا تبصرہ بھیجیں
                 </a>
-                
+
                 <div class="email-display">
                     <span id="email-text">muhammadrizwanrazzi54@gmail.com</span>
                     <button onclick="copyEmail()" class="copy-btn" id="copy-btn" data-ur="کاپی کریں" data-en="Copy">کاپی کریں</button>
@@ -398,7 +452,7 @@
     <h3 style="color: #D4AF37; margin: 0;" data-ur="⚙️ ایڈمن ڈیش بورڈ" data-en="⚙️ Admin Dashboard">⚙️ ایڈمن ڈیش بورڈ</h3>
     <button onclick="logoutAdmin()" style="background-color: #ef4444; color: #ffffff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem;" data-ur="لاگ آؤٹ 🚪" data-en="Logout 🚪">لاگ آؤٹ 🚪</button>
 </div>
-            
+
             <!-- 24 گھنٹے والا اسٹیٹس سیکشن -->
             <h4 style="color: #D4AF37; margin-bottom: 5px;" data-ur="1. تازہ پیغام (24 Hours Status)" data-en="1. Status (24 Hours)">1. تازہ پیغام (24 Hours Status)</h4>
             <textarea id="newStatus" class="admin-textarea" rows="2" data-ur-ph="یہاں 24 گھنٹے کے لیے نیا پیغام لکھیں..." data-en-ph="Write status for 24 hours..." placeholder="یہاں 24 گھنٹے کے لیے نیا پیغام لکھیں..."></textarea>
@@ -412,19 +466,19 @@
             <!-- 2. تصویری کلام اپلوڈ سیکشن -->
 <div style="background-color: #121212; border: 2px solid #D4AF37; border-radius: 12px; padding: 15px; margin-top: 20px;">
     <h4 style="color: #D4AF37; margin-bottom: 10px;" data-ur="2. تصویری کلام اپلوڈ کریں" data-en="2. Upload Poetry Image">2. تصویری کلام اپلوڈ کریں</h4>
-    
+
     <label style="color: #cbd5e1; display: block; margin-bottom: 5px;" data-ur="تصویر منتخب کریں (JPG / PNG):" data-en="Select Image (JPG / PNG):">تصویر منتخب کریں (JPG / PNG):</label>
     <input type="file" id="poetryImageInput" accept="image/*" class="file-input" style="width: 100%; margin-bottom: 12px;">
-    
+
     <button onclick="uploadPoetryImage()" class="admin-btn" style="width: 100%;" data-ur="اپلوڈ کریں 📤" data-en="Upload 📤">اپلوڈ کریں 📤</button>
-    
+
     <p id="poetryStatus" style="text-align: center; margin-top: 8px; font-weight: bold;"></p>
 </div>
 
 <hr style="border: 0.5px solid #334155; margin: 20px 0;">
 
             <!-- نئی کتاب کا اندراج -->
-            <h4 style="color: #D4AF37; margin-bottom: 5px;" data-ur="3. نئی کتاب کا اندراج" data-en="2. Upload New Book">2. نئی کتاب کا اندراج</h4>
+            <h4 style="color: #D4AF37; margin-bottom: 5px;" data-ur="3. نئی کتاب کا اندراج" data-en="2. Upload New Book">3. نئی کتاب کا اندراج</h4>
             <label style="color: #cbd5e1;" data-ur="کتاب کا نام:" data-en="Book Title:">کتاب کا نام:</label>
             <input type="text" id="bookTitle" class="admin-input" data-ur-ph="مثلاً: نیم بسمل" data-en-ph="e.g. Neem Bismil" placeholder="مثلاً: نیم بسمل">
 
@@ -465,13 +519,8 @@
         <iframe id="pdfViewer" class="pdf-viewer"></iframe>
     </div>
 
- <!-- Firebase SDKs (Compatibility Scripts) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
 <script>
-    // Firebase Configuration (آپ کی اصلی Keys کنیکٹ کر دی گئی ہیں)
+    // Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyBoeQyEWM87yWKAVAJ9IQonSx2RsfrAj1I",
         authDomain: "razzi-24272website.firebaseapp.com",
@@ -492,13 +541,48 @@
     var currentLang = 'ur';
 
     window.onload = function() {
-        listenToLiveStatus(); // لائیو اسٹیٹس آن کر دیا گیا ہے
+        listenToLiveStatus();
+        init3DBackground(); // 3D شروع
     };
+
+    // 3D Floating Particles Background
+    function init3DBackground() {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('bg-3d'), alpha: true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(1200 * 3);
+        for(let i = 0; i < positions.length; i++) {
+            positions[i] = (Math.random() - 0.5) * 30;
+        }
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const material = new THREE.PointsMaterial({color: 0xD4AF37, size: 0.04, transparent: true, opacity: 0.6});
+        const stars = new THREE.Points(geometry, material);
+        scene.add(stars);
+        camera.position.z = 4;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.y += 0.0004;
+            stars.rotation.x += 0.0001;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth/window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    }
 
     function toggleLanguage() {
         var elements = document.querySelectorAll('[data-ur]');
         var langBtn = document.getElementById('langBtn');
-        
+
         elements.forEach(function(element) {
             if (currentLang === 'ur') {
                 element.innerText = element.getAttribute('data-en');
@@ -530,17 +614,17 @@
     function copyEmail() {
         var emailText = document.getElementById("email-text").innerText;
         navigator.clipboard.writeText(emailText);
-        
+
         var copyBtn = document.getElementById("copy-btn");
         var originalUr = copyBtn.getAttribute('data-ur');
         var originalEn = copyBtn.getAttribute('data-en');
-        
-        copyBtn.innerText = (currentLang === 'ur') ? "کاپی ہو گیا!" : "Copied!";
+
+        copyBtn.innerText = (currentLang === 'ur')? "کاپی ہو گیا!" : "Copied!";
         copyBtn.style.backgroundColor = "#22c55e";
         copyBtn.style.color = "#ffffff";
-        
+
         setTimeout(function() {
-            copyBtn.innerText = (currentLang === 'ur') ? originalUr : originalEn;
+            copyBtn.innerText = (currentLang === 'ur')? originalUr : originalEn;
             copyBtn.style.backgroundColor = "#D4AF37";
             copyBtn.style.color = "#050505";
         }, 2000);
@@ -558,30 +642,29 @@
     function submitAdminLogin() {
         var passInput = document.getElementById("adminPassInput").value;
         if (passInput === "rizwanrazzi@2026") {
-            alert(currentLang === 'ur' ? "لاگ ان کامیاب!" : "Login Successful!");
+            alert(currentLang === 'ur'? "لاگ ان کامیاب!" : "Login Successful!");
             closeLoginModal();
             document.getElementById("adminPanel").style.display = "block";
         } else {
-            alert(currentLang === 'ur' ? "غ غلط پاسورڈ!" : "Wrong Password!");
+            alert(currentLang === 'ur'? "غلط پاسورڈ!" : "Wrong Password!");
         }
     }
 
     function logoutAdmin() {
         document.getElementById("adminPanel").style.display = "none";
-        alert(currentLang === 'ur' ? "آپ کامیاب لاگ آؤٹ ہو چکے ہیں!" : "You have logged out successfully!");
+        alert(currentLang === 'ur'? "آپ کامیاب لاگ آؤٹ ہو چکے ہیں!" : "You have logged out successfully!");
     }
 
-    /* 🔥 24 گھنٹے والا کراس ڈیوائس لائیو اسٹیٹس (Firestore + Storage) 🔥 */
     async function saveStatus() {
         var text = document.getElementById("newStatus").value;
         var file = document.getElementById("statusImgInput").files[0];
 
-        if (!text && !file) {
-            alert(currentLang === 'ur' ? "براہ کرم تحریر یا تصویر شامل کریں!" : "Please add text or image!");
+        if (!text &&!file) {
+            alert(currentLang === 'ur'? "براہ کرم تحریر یا تصویر شامل کریں!" : "Please add text or image!");
             return;
         }
 
-        var expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 گھنٹے کا وقت
+        var expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000);
         var imageUrl = "";
 
         try {
@@ -591,7 +674,6 @@
                 imageUrl = await storageRef.getDownloadURL();
             }
 
-            // لائیو ڈیٹا بیس میں محفوظ کرنا
             await db.collection("status").doc("global_status").set({
                 text: text || "",
                 imageUrl: imageUrl,
@@ -599,7 +681,7 @@
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            alert(currentLang === 'ur' ? "اسٹیٹس تمام ڈیوائسز کے لیے لائیو ہو گیا!" : "Status live across all devices!");
+            alert(currentLang === 'ur'? "اسٹیٹس تمام ڈیوائسز کے لیے لائیو ہو گیا!" : "Status live across all devices!");
             document.getElementById("newStatus").value = "";
             document.getElementById("statusImgInput").value = "";
         } catch (error) {
@@ -607,15 +689,12 @@
         }
     }
 
-    // تمام یوزرز کے لیے اسٹیٹس خود بخود چیک اور اپ ڈیٹ کرنے کا فنکشن
     function listenToLiveStatus() {
         db.collection("status").doc("global_status")
-        .onSnapshot((doc) => {
+      .onSnapshot((doc) => {
             if (doc.exists) {
                 var data = doc.data();
                 var now = new Date().getTime();
-
-                // اگر 24 گھنٹے مکمل ہو گئے ہیں تو خود بخود مٹا دیں
                 if (data.expiry && now < data.expiry) {
                     applyStatusUI(data.text, data.imageUrl);
                 } else {
@@ -624,17 +703,13 @@
             } else {
                 document.getElementById("statusBox").style.display = "none";
             }
-        }, (error) => {
-            console.log("Status Fetch Error: ", error);
         });
     }
 
     function deleteStatus() {
         db.collection("status").doc("global_status").delete().then(() => {
             document.getElementById("statusBox").style.display = "none";
-            alert(currentLang === 'ur' ? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
-        }).catch((error) => {
-            alert("Error: " + error.message);
+            alert(currentLang === 'ur'? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
         });
     }
 
@@ -650,7 +725,6 @@
         document.getElementById("statusBox").style.display = "block";
     }
 
-    /* 📚 کتاب اپلوڈنگ فنکشن (Firebase) 📚 */
     async function uploadBook() {
         var title = document.getElementById("bookTitle").value;
         var desc = document.getElementById("bookDesc").value;
@@ -659,13 +733,13 @@
         var showRead = document.getElementById("showReadBtn").checked;
         var showDownload = document.getElementById("showDownloadBtn").checked;
 
-        if (!title || !coverFile || !pdfFile) {
-            alert(currentLang === 'ur' ? "براہ کرم تمام معلومات اور فائلیں شامل کریں!" : "Please fill all details and upload files!");
+        if (!title ||!coverFile ||!pdfFile) {
+            alert(currentLang === 'ur'? "براہ کرم تمام معلومات اور فائلیں شامل کریں!" : "Please fill all details and upload files!");
             return;
         }
 
         var btn = document.getElementById("uploadBookBtn");
-        btn.innerText = currentLang === 'ur' ? "اپلوڈ ہو رہا ہے..." : "Uploading...";
+        btn.innerText = currentLang === 'ur'? "اپلوڈ ہو رہا ہے..." : "Uploading...";
         btn.disabled = true;
 
         try {
@@ -687,11 +761,11 @@
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            alert(currentLang === 'ur' ? "کتاب کامیابی سے اپلوڈ ہو گئی!" : "Book uploaded successfully!");
+            alert(currentLang === 'ur'? "کتاب کامیابی سے اپلوڈ ہو گئی!" : "Book uploaded successfully!");
             location.reload();
         } catch (error) {
             alert("Error: " + error.message);
-            btn.innerText = currentLang === 'ur' ? "کتاب اپلوڈ کریں" : "Upload Book";
+            btn.innerText = currentLang === 'ur'? "کتاب اپلوڈ کریں" : "Upload Book";
             btn.disabled = false;
         }
     }
@@ -706,29 +780,28 @@
         document.getElementById("pdfViewer").src = "";
     }
 
-    /* 🖼️ تصویری کلام اپلوڈ کرنے کا فنکشن (فوٹو گیلری) 🖼️ */
     function uploadPoetryImage() {
         const fileInput = document.getElementById('poetryImageInput');
         const statusDiv = document.getElementById('poetryStatus');
         const file = fileInput.files[0];
 
         if (!file) {
-            alert(currentLang === 'ur' ? "براہِ کرم تصویر منتخب کریں!" : "Please select an image!");
+            alert(currentLang === 'ur'? "براہِ کرم تصویر منتخب کریں!" : "Please select an image!");
             return;
         }
 
         statusDiv.style.color = "#D4AF37";
-        statusDiv.innerText = currentLang === 'ur' ? "تصویر اپلوڈ ہو رہی ہے..." : "Uploading image...";
+        statusDiv.innerText = currentLang === 'ur'? "تصویر اپلوڈ ہو رہی ہے..." : "Uploading image...";
 
         const storageRef = storage.ref('poetry/' + Date.now() + '_' + file.name);
         const uploadTask = storageRef.put(file);
 
-        uploadTask.on('state_changed', 
-            null, 
+        uploadTask.on('state_changed',
+            null,
             (error) => {
                 statusDiv.style.color = "#ff5252";
-                statusDiv.innerText = (currentLang === 'ur' ? "خرابی: " : "Error: ") + error.message;
-            }, 
+                statusDiv.innerText = (currentLang === 'ur'? "خرابی: " : "Error: ") + error.message;
+            },
             () => {
                 uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                     db.collection("poetry").add({
@@ -736,8 +809,11 @@
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }).then(() => {
                         statusDiv.style.color = "#4caf50";
-                        statusDiv.innerText = currentLang === 'ur' ? "تصویری کلام کامیابی سے اپلوڈ ہو گیا! ✅" : "Poetry image uploaded successfully! ✅";
+                        statusDiv.innerText = currentLang === 'ur'? "تصویری کلام کامیابی سے اپلوڈ ہو گیا! ✅" : "Poetry image uploaded successfully! ✅";
                         fileInput.value = "";
+                    }).catch((err) => {
+                        statusDiv.style.color = "#ff5252";
+                        statusDiv.innerText = (currentLang === 'ur'? "ڈیٹا بیس میں خرابی: " : "DB Error: ") + err.message;
                     });
                 });
             }
