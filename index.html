@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محمد رضوان رضی - صفحہ اول</title>
+    <title>محمد رضوان رضیؔ - سرکاری ویب سائٹ</title>
+    
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -15,21 +16,28 @@
     </script>
 
     <style>
+        /* Royal Dark & Metallic Gold Theme Variables */
+        :root {
+            --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --gold-subtle-gradient: linear-gradient(145deg, rgba(212, 175, 55, 0.15), rgba(10, 10, 10, 0.8));
+            --gold-border: #d4af37;
+            --gold-shadow: 0 0 20px rgba(212, 175, 55, 0.35);
+            --bg-dark: #050505;
+            --card-bg: rgba(18, 18, 18, 0.85);
+        }
+
         body {
-            background-color: #050505;
+            background-color: var(--bg-dark);
             color: #f8fafc;
-            font-family: 'JameelNooriNastaleeqRegular', Arial, sans-serif;
+            font-family: 'JameelNooriNastaleeqRegular', 'Noto Nastaliq Urdu', Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 0;
             min-height: 100vh;
             box-sizing: border-box;
             overflow-x: hidden;
         }
 
-        /* 3D Canvas Background */
+        /* 3D Background Canvas */
         #bg-3d {
             position: fixed;
             top: 0;
@@ -39,499 +47,716 @@
             z-index: -1;
         }
 
-        /* نیا کونے والا چھوٹا گول لوگو */
-       .corner-logo {
-            position: absolute;
-            top: 20px;
-            right: 20px; /* RTL ہے تو دائیں کونے میں */
-            width: 70px;
-            height: 70px;
-            border-radius: 50%; /* گول کرنے کے لیے */
-            border: 2px solid #D4AF37;
-            object-fit: cover;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-            z-index: 10;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-      .lang-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px; /* اب بٹن بائیں طرف شفٹ کر دیا */
-            background-color: transparent;
-            color: #D4AF37;
-            border: 2px solid #D4AF37;
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-      .lang-btn:hover {
-            background-color: #D4AF37;
-            color: #050505;
-        }
-
-      .container {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            max-width: 600px;
-            margin-top: 100px; /* اوپر سے سپیس بڑھا دی تاکہ لوگو سے ٹکرائے نہیں */
+        /* Top Header & Navigation Bar */
+        .navbar {
             width: 100%;
+            padding: 15px 30px;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-        }
-
-      .profile-img {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            border: 3px solid #D4AF37;
-            object-fit: cover;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-            transition: transform 0.3s ease;
-        }
-      .profile-img:hover {
-            transform: scale(1.05) rotateY(10deg);
-        }
-
-      .main-title {
-            color: #D4AF37;
-            font-size: 2.2rem;
-            margin-top: 15px;
-            margin-bottom: 5px;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-        }
-
-      .sub-title {
-            color: #a1a1aa;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-        }
-
-      .intro-text {
-            color: #cbd5e1;
-            font-size: 1.1rem;
-            margin-top: 0;
-            margin-bottom: 25px;
-            line-height: 1.7;
-            max-width: 500px;
-            padding: 0 10px;
-        }
-
-        /* 24 گھنٹے والا اسٹیٹس باکس */
-      .status-box {
-            display: none;
-            background: rgba(18, 18, 18, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid #D4AF37;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            width: 100%;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
             box-sizing: border-box;
         }
 
-      .status-title {
-            color: #D4AF37;
-            font-size: 1.1rem;
-            margin: 0 0 8px 0;
-            font-weight: bold;
-        }
-
-      .status-content {
-            color: #f1f5f9;
-            font-size: 1.15rem;
-            margin: 0;
-            line-height: 1.6;
-        }
-
-      .status-img {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 8px;
-            border: 1px solid #D4AF37;
-            margin-top: 10px;
-        }
-
-      .nav-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            margin-bottom: 30px;
-        }
-
-      .nav-btn {
-            background-color: rgba(18, 18, 18, 0.8);
-            backdrop-filter: blur(10px);
-            color: #D4AF37;
-            text-decoration: none;
-            padding: 14px 20px;
-            border-radius: 10px;
-            border: 1px solid #D4AF37;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            display: block;
-        }
-
-      .nav-btn:hover {
-            background-color: #D4AF37;
-            color: #050505;
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-        }
-
-      .feedback-section {
-            width: 100%;
-            margin-top: 10px;
-            padding: 25px;
-            background-color: rgba(18, 18, 18, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid #D4AF37;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-            box-sizing: border-box;
-        }
-
-      .feedback-title {
-            color: #D4AF37;
-            font-size: 1.4rem;
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-
-      .feedback-text {
-            color: #cbd5e1;
-            font-size: 1.05rem;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-      .email-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-      .email-btn {
-            display: inline-block;
-            background-color: transparent;
-            color: #D4AF37;
-            border: 2px solid #D4AF37;
-            padding: 10px 25px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 25px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-      .email-btn:hover {
-            background-color: #D4AF37;
-            color: #050505;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-        }
-
-      .email-display {
-            background-color: #050505;
-            border: 1px dashed #D4AF37;
-            padding: 8px 18px;
-            border-radius: 20px;
-            color: #cbd5e1;
-            font-size: 0.95rem;
+        .nav-brand {
             display: flex;
             align-items: center;
             gap: 12px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--gold-border);
+            object-fit: cover;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+
+        .brand-name {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            padding: 6px 14px;
+            border-radius: 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #fcf6ba;
+            background: rgba(212, 175, 55, 0.15);
+            border-bottom: 2px solid var(--gold-border);
+        }
+
+        .lang-btn {
+            background: rgba(18, 18, 18, 0.8);
+            color: #fcf6ba;
+            border: 1px solid var(--gold-border);
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            background: var(--gold-gradient);
+            color: #050505;
+            box-shadow: var(--gold-shadow);
+        }
+
+        /* Main Layout Container */
+        .main-wrapper {
+            max-width: 1000px;
+            margin: 110px auto 40px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        /* Hero Section (پروفائل اور تعارف) */
+        .hero-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            box-shadow: var(--gold-shadow);
+        }
+
+        .hero-content {
+            flex: 1;
+            text-align: right;
+        }
+
+        .main-title {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.8rem;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+            filter: drop-shadow(0px 2px 6px rgba(212, 175, 55, 0.3));
+        }
+
+        .sub-title {
+            color: #c5a059;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .intro-text {
+            color: #e2e8f0;
+            font-size: 1.2rem;
+            line-height: 1.9;
+            margin: 0;
+        }
+
+        .hero-avatar {
+            position: relative;
+        }
+
+        .profile-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 3px solid var(--gold-border);
+            object-fit: cover;
+            box-shadow: var(--gold-shadow);
+            transition: transform 0.4s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        /* Featured Couplet Box */
+        .couplet-box {
+            background: var(--gold-subtle-gradient);
+            border: 1.5px solid var(--gold-border);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--gold-shadow);
+        }
+
+        .couplet-line {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.8rem;
+            margin: 6px 0;
+            font-weight: bold;
+        }
+
+        /* Detailed About Section (Hidden by default on Home Page) */
+        .about-box {
+            display: none;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid var(--gold-border);
+            border-radius: 20px;
+            padding: 35px 30px;
+            box-shadow: var(--gold-shadow);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .about-box-title {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.8rem;
+            margin: 0 0 15px 0;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .about-subheading {
+            color: #d4af37;
+            font-size: 1.35rem;
+            margin: 20px 0 10px 0;
+            font-weight: bold;
+        }
+
+        .about-box-text {
+            color: #e2e8f0;
+            font-size: 1.2rem;
+            line-height: 2.1;
+            margin: 0 0 15px 0;
+            text-align: justify;
+        }
+
+        /* Dynamic Status Card */
+        .status-box {
+            display: none;
+            background: var(--gold-subtle-gradient);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid var(--gold-border);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--gold-shadow);
+            text-align: center;
+        }
+
+        .status-title {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.4rem;
+            margin: 0 0 12px 0;
+            font-weight: bold;
+        }
+
+        .status-content {
+            color: #f1f5f9;
+            font-size: 1.25rem;
+            margin: 0;
+            line-height: 1.8;
+        }
+
+        .status-img {
+            max-width: 100%;
+            max-height: 380px;
+            border-radius: 12px;
+            border: 1px solid var(--gold-border);
+            margin-top: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Feature Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold-border);
+            box-shadow: var(--gold-shadow);
+            background: rgba(25, 25, 25, 0.95);
+        }
+
+        .card-icon {
+            font-size: 2.8rem;
+        }
+
+        .card-title {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .card-desc {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Feedback Section */
+        .feedback-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            padding: 35px 25px;
+            text-align: center;
+            box-shadow: var(--gold-shadow);
+        }
+
+        .feedback-title {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.6rem;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+        }
+
+        .feedback-text {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        .email-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .email-btn {
+            background: transparent;
+            color: #fcf6ba;
+            border: 2px solid var(--gold-border);
+            padding: 12px 30px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .email-btn:hover {
+            background: var(--gold-gradient);
+            color: #050505;
+            box-shadow: var(--gold-shadow);
+        }
+
+        .email-display {
+            background-color: #000;
+            border: 1px dashed var(--gold-border);
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: #cbd5e1;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
             direction: ltr;
         }
 
-      .copy-btn {
-            background-color: #D4AF37;
+        .copy-btn {
+            background: var(--gold-gradient);
             color: #050505;
             border: none;
-            padding: 4px 12px;
-            border-radius: 12px;
+            padding: 6px 16px;
+            border-radius: 14px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             transition: all 0.2s ease;
         }
 
-      .copy-btn:hover {
-            background-color: #ffffff;
+        /* Admin & Footer Elements */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-      .admin-trigger {
-            margin-top: 30px;
-            color: #52525b;
-            font-size: 0.8rem;
+        .admin-trigger {
+            color: #64748b;
             cursor: pointer;
             text-decoration: none;
+            transition: color 0.3s ease;
         }
-      .admin-trigger:hover {
-            color: #D4AF37;
+        .admin-trigger:hover {
+            color: var(--gold-border);
         }
 
-      .modal-overlay {
+        /* Admin Panel Modal & Dashboard */
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            z-index: 100;
+            background-color: rgba(0, 0, 0, 0.88);
+            z-index: 200;
             justify-content: center;
             align-items: center;
         }
 
-      .modal-box {
+        .modal-box {
             background-color: #121212;
-            border: 2px solid #D4AF37;
+            border: 2px solid var(--gold-border);
             border-radius: 12px;
             padding: 25px;
             width: 90%;
             max-width: 380px;
             text-align: center;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            box-shadow: var(--gold-shadow);
         }
 
-      .admin-panel {
+        .admin-panel {
             display: none;
-            background-color: rgba(18, 18, 18, 0.9);
+            background-color: rgba(18, 18, 18, 0.95);
             backdrop-filter: blur(10px);
-            border: 1px solid #D4AF37;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 25px;
-            width: 100%;
-            box-sizing: border-box;
+            border: 1.5px solid var(--gold-border);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 20px;
             text-align: right;
+            box-shadow: var(--gold-shadow);
         }
 
-      .admin-input,.admin-textarea,.file-input {
+        .admin-input, .admin-textarea, .file-input {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
             margin-bottom: 15px;
-            border-radius: 6px;
-            border: 1px solid #D4AF37;
+            border-radius: 8px;
+            border: 1px solid var(--gold-border);
             background-color: #050505;
             color: #fff;
             box-sizing: border-box;
             font-family: inherit;
         }
 
-      .admin-btn {
-            background-color: #D4AF37;
+        .admin-btn {
+            background: var(--gold-gradient);
             color: #050505;
             border: none;
             padding: 10px 20px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
             width: 100%;
             font-size: 1rem;
         }
 
-      .checkbox-group {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            color: #cbd5e1;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* In-site PDF Reader Modal */
-      .pdf-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 200;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-      .pdf-viewer {
-            width: 90%;
-            height: 85%;
-            border: 2px solid #D4AF37;
-            border-radius: 8px;
-        }
-
-      .close-pdf {
-            background-color: #D4AF37;
-            color: #050505;
-            border: none;
-            padding: 8px 20px;
-            font-weight: bold;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            cursor: pointer;
+        /* Responsive Layout Adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                flex-direction: column-reverse;
+                text-align: center;
+            }
+            .hero-content {
+                text-align: center;
+            }
+            .navbar {
+                padding: 12px 15px;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .couplet-line {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- 3D Background Canvas -->
+    <!-- 3D Canvas Background -->
     <canvas id="bg-3d"></canvas>
 
-    <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="javascript:void(0)" onclick="showHomePage()" class="nav-brand">
+            <img src="logo-razi-3d.png" alt="Logo" class="nav-logo">
+            <span class="brand-name" data-ur="محمد رضوان رضیؔ" data-en="Muhammad Rizwan Razzi">محمد رضوان رضیؔ</span>
+        </a>
+        <div class="nav-links">
+            <button onclick="showHomePage()" class="nav-item active" id="btnHome" data-ur="صفحہ اول" data-en="Home">صفحہ اول</button>
+            <button onclick="showAboutSection()" class="nav-item" id="btnAbout" data-ur="تعارف" data-en="About Me">تعارف</button>
+            <a href="books.html" class="nav-item" data-ur="کتابیں" data-en="Books">کتابیں</a>
+            <a href="gallery.html" class="nav-item" data-ur="تصویری کلام" data-en="Gallery">تصویری کلام</a>
+            <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
+        </div>
+    </nav>
 
-    <!-- نیا کونے والا لوگو -->
-    <img src="logo-razi-3d.png" alt="RAZI Logo" class="corner-logo">
+    <!-- Main Content Container -->
+    <div class="main-wrapper">
 
-    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="main-title" data-ur="محمد رضوان رضیؔ" data-en="Muhammad Rizwan Razzi">محمد رضوان رضیؔ</h1>
+                <p class="sub-title" data-ur="شاعر، مصنف، استاد و محققِ نفسیات" data-en="Poet, Author, Educator & Psychology Researcher">شاعر، مصنف، استاد و محققِ نفسیات</p>
+                <p class="intro-text"
+                   data-ur="علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل اور تصویری کلام میں آپ کی خدمت میں حاضر ہیں۔"
+                   data-en="Welcome to the world of literature! As a poet and author, I share deep emotions, thoughts, and poetic creations through my books and gallery.">
+                   علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل اور تصویری کلام میں آپ کی خدمت میں حاضر ہیں۔
+                </p>
+            </div>
+            <div class="hero-avatar">
+                <img src="profile.jpg" alt="Muhammad Rizwan Razzi" class="profile-img">
+            </div>
+        </section>
 
-        <img src="profile.jpg" alt="Profile" class="profile-img">
+        <!-- Featured Couplet Box -->
+        <div class="couplet-box">
+            <p class="couplet-line" data-ur="تلاشِ عشق میں بھٹکنا بھی ایک نعمت ہے" data-en="Wandering in search of love is a blessing in itself">تلاشِ عشق میں بھٹکنا بھی ایک نعمت ہے</p>
+            <p class="couplet-line" data-ur="عطائے عشق میں کیوں دل کو ہم بخیل کریں" data-en="Why should we withhold our hearts from the gift of love">عطائے عشق میں کیوں دل کو ہم بخیل کریں</p>
+        </div>
 
-        <h1 class="main-title" data-ur="محمد رضوان رضی" data-en="Muhammad Rizwan Razzi">محمد رضوان رضی</h1>
-        <p class="sub-title" data-ur="شاعر و مصنف" data-en="Poet & Author">شاعر و مصنف</p>
-
-        <p class="intro-text"
-           data-ur="علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر ، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل میں آپ کی خدمت میں حاضر ہیں ۔"
-           data-en="Welcome to the realm of literature! As an author and poet, I present life's feelings, thoughts, and stories in book form for you....">
-         علم و ادب کی خوبصورت دنیا میں خوش آمدید! بطور مصنف و شاعر ، زندگی کے احساسات، افکار اور کہانیاں کتابی شکل میں آپ کی خدمت میں حاضر ہیں ۔
-        </p>
-
-        <!-- 24 گھنٹے والا اسٹیٹس باکس -->
+        <!-- 24 Hours Dynamic Status Box -->
         <div id="statusBox" class="status-box">
-            <p class="status-title" data-ur="✨ آج کی بات / تازہ پیغام" data-en="✨ Today's Message">✨ آج کی بات / تازہ پیغام</p>
+            <p class="status-title" data-ur="✨ تازہ پیغام / آج کی بات" data-en="✨ Today's Message">✨ تازہ پیغام / آج کی بات</p>
             <p id="statusText" class="status-content"></p>
             <img id="statusImgDisplay" class="status-img" style="display: none;">
         </div>
 
-        <div class="nav-buttons">
-            <a href="books.html" class="nav-btn" data-ur="📚 میری کتابیں" data-en="📚 My Books">📚 میری کتابیں</a>
-            <a href="gallery.html" class="nav-btn" data-ur="🖼️ تصویری کلام" data-en="🖼️ Poetry Gallery">🖼️ تصویری کلام</a>
-        </div>
+        <!-- Comprehensive & Detailed About Section -->
+        <section id="aboutSection" class="about-box">
+            <h2 class="about-box-title" data-ur="تفصیلی سوانح و علمی تعارف" data-en="Detailed Biography & Profile">تفصیلی سوانح و علمی تعارف</h2>
+            
+            <h3 class="about-subheading" data-ur="1. ابتدائی پس منظر و وطن" data-en="1. Background & Homeland">1. ابتدائی پس منظر و وطن</h3>
+            <p class="about-box-text"
+               data-ur="محمد رضوان رضیؔ (اصل نام: رضوان) کا تعلق آزاد کشمیر کے تاریخی، خوبصورت اور پرفضا ضلع حویلی کے باوقار گاؤں سولی خاص سے ہے۔ آپ کی طبیعت میں فطرت کی خوبصورتی، کہساروں کی نفاست اور آزاد کشمیر کے روایتی حسن کا گہرا اثر موجود ہے، جو آپ کی تحریروں اور شاعرانہ فکر میں جا بجا نظر آتا ہے۔"
+               data-en="Muhammad Rizwan Razzi (Given name: Rizwan) hails from Suli Khas in the scenic Haveli District of Azad Kashmir. His roots in the mountains deeply influence his aesthetic and literary philosophy.">
+               محمد رضوان رضیؔ (اصل نام: رضوان) کا تعلق آزاد کشمیر کے تاریخی، خوبصورت اور پرفضا ضلع حویلی کے باوقار گاؤں سولی خاص سے ہے۔ آپ کی طبیعت میں فطرت کی خوبصورتی، کہساروں کی نفاست اور آزاد کشمیر کے روایتی حسن کا گہرا اثر موجود ہے، جو آپ کی تحریروں اور شاعرانہ فکر میں جا بجا نظر آتا ہے۔
+            </p>
 
-        <div class="feedback-section">
+            <h3 class="about-subheading" data-ur="2. تدریس و تربیتِ اطفال" data-en="2. Profession & Pedagogy">2. تدریس و تربیتِ اطفال</h3>
+            <p class="about-box-text"
+               data-ur="پیشہ ورانہ لحاظ سے آپ راولپنڈی میں شعبہ تدریس سے وابستہ ہیں، جہاں آپ بچوں کی تعلیمی و اخلاقی تربیت کے معتبر فرائض سرانجام دے رہے ہیں۔ آپ کا ماننا ہے کہ استاد صرف علم منتقل نہیں کرتا بلکہ بچے کی صلاحیتوں اور سوچ کو نکھار کر اسے معاشرے کا ایک باشعور انسان بناتا ہے۔"
+               data-en="Professionally based in Rawalpindi, he serves as an educator dedicated to teaching and mentoring young minds, shaping their moral and intellectual growth.">
+               پیشہ ورانہ لحاظ سے آپ راولپنڈی میں شعبہ تدریس سے وابستہ ہیں، جہاں آپ بچوں کی تعلیمی و اخلاقی تربیت کے معتبر فرائض سرانجام دے رہے ہیں۔ آپ کا ماننا ہے کہ استاد صرف علم منتقل نہیں کرتا بلکہ بچے کی صلاحیتوں اور سوچ کو نکھار کر اسے معاشرے کا ایک باشعور انسان بناتا ہے۔
+            </p>
+
+            <h3 class="about-subheading" data-ur="3. انسانی نفسیات، فکر اور طرزِ تحریر" data-en="3. Psychology & Writing Style">3. انسانی نفسیات، فکر اور طرزِ تحریر</h3>
+            <p class="about-box-text"
+               data-ur="تدریسی اور ادبی مصروفیات کے ساتھ ساتھ آپ انسانی نفسیات، اندرونی کیفیات، رویوں اور جذباتی الجھنوں کا انتہائی گہرا مطالعہ رکھتے ہیں۔ آپ کی زیادہ تر تحریریں اور مضامین انسان کے باطن، معاشرتی سچائیوں اور نفسیاتی زاویوں پر مبنی ہیں۔ آپ کا قلم پیچیدہ انسانی جذبات کو انتہائی سادہ، اثر انگیز اور دل نشین الفاظ میں ڈھالنے کا ہنر جانتا ہے۔"
+               data-en="Alongside teaching, he deeply researches human psychology, emotional complexities, and inner states. His prose and essays reflect psychological truths and inner human experiences with clarity and impact.">
+               تدریسی اور ادبی مصروفیات کے ساتھ ساتھ آپ انسانی نفسیات، اندرونی کیفیات، رویوں اور جذباتی الجھنوں کا انتہائی گہرا مطالعہ رکھتے ہیں۔ آپ کی زیادہ تر تحریریں اور مضامین انسان کے باطن، معاشرتی سچائیوں اور نفسیاتی زاویوں پر مبنی ہیں۔ آپ کا قلم پیچیدہ انسانی جذبات کو انتہائی سادہ، اثر انگیز اور دل نشین الفاظ میں ڈھالنے کا ہنر جانتا ہے۔
+            </p>
+
+            <h3 class="about-subheading" data-ur="4. شاعرانہ شناخت اور تصانیف" data-en="4. Poetic Identity & Works">4. شاعرانہ شناخت اور تصانیف</h3>
+            <p class="about-box-text"
+               data-ur="اردو ادب میں آپ کی شناخت ایک نفیس غزل گو شاعر کی حیثیت سے ہے۔ آپ کے کلام میں عروض، بحور اور ردیف و قافیہ کی پابندی کے ساتھ ساتھ جدتِ فکر اور غنائیت کا زبردست التزام ملتا ہے۔ آپ کی نمائندہ تصانیف درج ذیل ہیں:"
+               data-en="In Urdu literature, he is recognized for classical ghazal metre, exact rhyme structures, and deep resonance. His published and upcoming works include:">
+               اردو ادب میں آپ کی شناخت ایک نفیس غزل گو شاعر کی حیثیت سے ہے۔ آپ کے کلام میں عروض، بحور اور ردیف و قافیہ کی پابندی کے ساتھ ساتھ جدتِ فکر اور غنائیت کا زبردست التزام ملتا ہے۔ آپ کی نمائندہ تصانیف درج ذیل ہیں:
+            </p>
+            <ul style="color: #cbd5e1; font-size: 1.15rem; line-height: 2; margin-bottom: 20px;">
+                <li><strong>ایک وجود دو دل:</strong> انسانی جذباتی و نفسیاتی کیفیات کا شاہکار۔</li>
+                <li><strong>خونِ دلِ مسلم:</strong> تحریکِ پاکستان سے آزادیِ کشمیر تک کا فکری و ملّی مطالعہ۔</li>
+                <li><strong>نیم بسمل:</strong> غزلوں اور جدید منظوم کلام کا دلکش مجموعہ۔</li>
+                <li><strong>قلم کا قیدی:</strong> نظریاتی، معاشرتی اور عصری موضوعات پر مبنی تحریریں۔</li>
+                <li><strong>قرطبہ کی شام:</strong> سحر انگیز شاعرانہ و تاریخی منظوم کاوش۔</li>
+            </ul>
+
+            <h3 class="about-subheading" data-ur="5. ماحولیاتی تحفظ و سماجی نقش" data-en="5. Environmental & Social Work">5. ماحولیاتی تحفظ و سماجی نقش</h3>
+            <p class="about-box-text"
+               data-ur="ادبی و تدریسی خدمات سے ہٹ کر آپ حویلی (سولی خاص) کے علاقے میں جنگلات کے تحفظ، درختوں کی کٹائی کی روک تھام اور شجرکاری کی مہمات میں متحرک کردار ادا کر رہے ہیں، تاکہ خطے کی فطری خوبصورتی کو برقرار رکھا جا سکے اور آنے والی نسلوں کو ایک پاکیزہ ماحول فراہم کیا جا سکے۔"
+               data-en="Beyond academics and literature, he actively leads forest preservation and tree planting initiatives in Haveli District for regional environmental sustainability.">
+               ادبی و تدریسی خدمات سے ہٹ کر آپ حویلی (سولی خاص) کے علاقے میں جنگلات کے تحفظ، درختوں کی کٹائی کی روک تھام اور شجرکاری کی مہمات میں متحرک کردار ادا کر رہے ہیں، تاکہ خطے کی فطری خوبصورتی کو برقرار رکھا جا سکے اور آنے والی نسلوں کو ایک پاکیزہ ماحول فراہم کیا جا سکے۔
+            </p>
+        </section>
+
+        <!-- Navigation Cards Grid (Shows on Home Page) -->
+        <section id="homeCardsGrid" class="cards-grid">
+            <a href="books.html" class="feature-card">
+                <div class="card-icon">📚</div>
+                <h2 class="card-title" data-ur="میری کتابیں" data-en="My Books">میری کتابیں</h2>
+                <p class="card-desc" data-ur="شائع شدہ کتب کا مطالعہ کریں اور آن لائن پڑھیں یا ڈاؤن لوڈ کریں۔" data-en="Explore published books, read online or download PDF files.">
+                    شائع شدہ کتب کا مطالعہ کریں اور آن لائن پڑھیں یا ڈاؤن لوڈ کریں۔
+                </p>
+            </a>
+
+            <a href="gallery.html" class="feature-card">
+                <div class="card-icon">🖼️</div>
+                <h2 class="card-title" data-ur="تصویری کلام" data-en="Poetry Gallery">تصویری کلام</h2>
+                <p class="card-desc" data-ur="خوبصورت خطاطی اور تصاویر میں ڈھلا ہوا شاعرانہ کلام دیکھیں۔" data-en="Discover aesthetic visual poetry and calligraphy artwork.">
+                    خوبصورت خطاطی اور تصاویر میں ڈھلا ہوا شاعرانہ کلام دیکھیں۔
+                </p>
+            </a>
+        </section>
+
+        <!-- Feedback Section -->
+        <section class="feedback-section">
             <h3 class="feedback-title" data-ur="آپ کی رائے میرے لیے محترم ہے" data-en="Your Feedback Matters">
                 آپ کی رائے میرے لیے محترم ہے
             </h3>
             <p class="feedback-text"
-               data-ur="تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ یا جائزہ بھیجنے کے لیے ای میل کیجیے۔"
-               data-en="Send your valuable review, feedback, or thoughts regarding my poetry and books via email.">
-                تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ یا جائزہ بھیجنے کے لیے ای میل کیجیے۔
+               data-ur="تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ بھیجنے یا فیس بک پر جڑنے کے لیے نیچے لنکس پر کلک کیجیے۔"
+               data-en="Send your valuable reviews, feedback via email or connect on Facebook.">
+                تحریر، کلام یا کتابوں کے متعلق اپنی قیمتی رائے، تبصرہ بھیجنے یا فیس بک پر جڑنے کے لیے نیچے لنکس پر کلک کیجیے۔
             </p>
 
             <div class="email-container">
-                <a href="mailto:muhammadrizwanrazzi54@gmail.com?subject=کلام/کتاب%20پر%20تبصرہ%20و%20رائے"
-                   class="email-btn"
-                   data-ur="✉️ رائے یا تبصرہ بھیجیں"
-                   data-en="✉️ Send Review / Feedback">
-                    ✉️ رائے یا تبصرہ بھیجیں
-                </a>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                    <a href="mailto:muhammadrizwanrazzi54@gmail.com?subject=کلام/کتاب%20پر%20تبصرہ"
+                       class="email-btn"
+                       data-ur="✉️ رائے یا تبصرہ بھیجیں"
+                       data-en="✉️ Send Review">
+                        ✉️ رائے یا تبصرہ بھیجیں
+                    </a>
+
+                    <a href="https://www.facebook.com/share/1cvaWgt8JT/"
+                       target="_blank"
+                       class="email-btn"
+                       data-ur="📘 فیس بک profile"
+                       data-en="📘 Facebook Profile">
+                        📘 فیس بک profile
+                    </a>
+                </div>
 
                 <div class="email-display">
                     <span id="email-text">muhammadrizwanrazzi54@gmail.com</span>
                     <button onclick="copyEmail()" class="copy-btn" id="copy-btn" data-ur="کاپی کریں" data-en="Copy">کاپی کریں</button>
                 </div>
             </div>
+        </section>
+
+        <!-- Admin Portal Trigger -->
+        <div style="text-align: center; margin-top: 10px;">
+            <span class="admin-trigger" onclick="openLoginModal()" data-ur="🔒 Admin Portal" data-en="🔒 Admin Portal">🔒 Admin Portal</span>
         </div>
 
-        <span class="admin-trigger" onclick="openLoginModal()" data-ur="🔒 Admin Portal" data-en="🔒 Admin Portal">🔒 Admin Portal</span>
-
-        <!-- ایڈمن ڈیش بورڈ پینل -->
+        <!-- Complete Admin Panel Dashboard -->
         <div id="adminPanel" class="admin-panel">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
-    <h3 style="color: #D4AF37; margin: 0;" data-ur="⚙️ ایڈمن ڈیش بورڈ" data-en="⚙️ Admin Dashboard">⚙️ ایڈمن ڈیش بورڈ</h3>
-    <button onclick="logoutAdmin()" style="background-color: #ef4444; color: #ffffff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem;" data-ur="لاگ آؤٹ 🚪" data-en="Logout 🚪">لاگ آؤٹ 🚪</button>
-</div>
+                <h3 style="color: #d4af37; margin: 0;" data-ur="⚙️ ایڈمن ڈیش بورڈ" data-en="⚙️ Admin Dashboard">⚙️ ایڈمن ڈیش بورڈ</h3>
+                <button onclick="logoutAdmin()" style="background-color: #ef4444; color: #ffffff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;" data-ur="لاگ آؤٹ 🚪" data-en="Logout 🚪">لاگ آؤٹ 🚪</button>
+            </div>
 
-            <!-- 24 گھنٹے والا اسٹیٹس سیکشن -->
-            <h4 style="color: #D4AF37; margin-bottom: 5px;" data-ur="1. تازہ پیغام (24 Hours Status)" data-en="1. Status (24 Hours)">1. تازہ پیغام (24 Hours Status)</h4>
-            <textarea id="newStatus" class="admin-textarea" rows="2" data-ur-ph="یہاں 24 گھنٹے کے لیے نیا پیغام لکھیں..." data-en-ph="Write status for 24 hours..." placeholder="یہاں 24 گھنٹے کے لیے نیا پیغام لکھیں..."></textarea>
-            <label style="color: #cbd5e1;" data-ur="تصویر منتخب کریں (آپشنل):" data-en="Select Image (Optional):">تصویر منتخب کریں (آپشنل):</label>
+            <!-- SECTION 1: Status Upload -->
+            <h4 style="color: #d4af37; margin-bottom: 5px;" data-ur="1. تازہ پیغام (24 Hours Status)" data-en="1. Status (24 Hours)">1. تازہ پیغام (24 Hours Status)</h4>
+            <textarea id="newStatus" class="admin-textarea" rows="2" placeholder="یہاں پیغام لکھیں..."></textarea>
             <input type="file" id="statusImgInput" class="file-input" accept="image/*">
-           <button onclick="saveStatus()" class="admin-btn" data-ur="پوسٹ کریں (Status)" data-en="Post Status">پوسٹ کریں (Status)</button>
-<button onclick="deleteStatus()" class="admin-btn" style="background-color: #ef4444; color: #ffffff; margin-top: 8px;" data-ur="اسٹیٹس ختم کریں (Delete)" data-en="Delete Status">اسٹیٹس ختم کریں (Delete)</button>
+            <button onclick="saveStatus()" class="admin-btn" data-ur="پوسٹ کریں" data-en="Post Status">پوسٹ کریں</button>
+            <button onclick="deleteStatus()" class="admin-btn" style="background: #ef4444; color: #fff; margin-top: 8px;" data-ur="اسٹیٹس ختم کریں" data-en="Delete Status">اسٹیٹس ختم کریں</button>
 
             <hr style="border: 0.5px solid #334155; margin: 20px 0;">
 
-            <!-- 2. تصویری کلام اپلوڈ سیکشن -->
-<div style="background-color: #121212; border: 2px solid #D4AF37; border-radius: 12px; padding: 15px; margin-top: 20px;">
-    <h4 style="color: #D4AF37; margin-bottom: 10px;" data-ur="2. تصویری کلام اپلوڈ کریں" data-en="2. Upload Poetry Image">2. تصویری کلام اپلوڈ کریں</h4>
+            <!-- SECTION 2: Book Upload -->
+            <h4 style="color: #d4af37; margin-bottom: 5px;" data-ur="2. نئی کتاب کا اندراج کریں" data-en="2. Upload New Book">2. نئی کتاب کا اندراج کریں</h4>
+            <input type="text" id="bookTitleInput" class="admin-input" placeholder="کتاب کا عنوان (نام)...">
+            <textarea id="bookDescInput" class="admin-textarea" rows="2" placeholder="کتاب کا مختصر تعارف..."></textarea>
+            <input type="file" id="bookImgInput" class="file-input" accept="image/*">
+            <button onclick="uploadBook()" class="admin-btn" data-ur="کتاب شامل کریں 📚" data-en="Upload Book 📚">کتاب شامل کریں 📚</button>
+            <p id="bookStatus" style="text-align: center; margin-top: 8px; font-weight: bold;"></p>
 
-    <label style="color: #cbd5e1; display: block; margin-bottom: 5px;" data-ur="تصویر منتخب کریں (JPG / PNG):" data-en="Select Image (JPG / PNG):">تصویر منتخب کریں (JPG / PNG):</label>
-    <input type="file" id="poetryImageInput" accept="image/*" class="file-input" style="width: 100%; margin-bottom: 12px;">
+            <hr style="border: 0.5px solid #334155; margin: 20px 0;">
 
-    <button onclick="uploadPoetryImage()" class="admin-btn" style="width: 100%;" data-ur="اپلوڈ کریں 📤" data-en="Upload 📤">اپلوڈ کریں 📤</button>
-
-    <p id="poetryStatus" style="text-align: center; margin-top: 8px; font-weight: bold;"></p>
-</div>
-
-<hr style="border: 0.5px solid #334155; margin: 20px 0;">
-
-            <!-- نئی کتاب کا اندراج -->
-            <h4 style="color: #D4AF37; margin-bottom: 5px;" data-ur="3. نئی کتاب کا اندراج" data-en="2. Upload New Book">3. نئی کتاب کا اندراج</h4>
-            <label style="color: #cbd5e1;" data-ur="کتاب کا نام:" data-en="Book Title:">کتاب کا نام:</label>
-            <input type="text" id="bookTitle" class="admin-input" data-ur-ph="مثلاً: نیم بسمل" data-en-ph="e.g. Neem Bismil" placeholder="مثلاً: نیم بسمل">
-
-            <label style="color: #cbd5e1;" data-ur="کتاب کی تفصیل:" data-en="Book Description:">کتاب کی تفصیل:</label>
-            <textarea id="bookDesc" class="admin-textarea" rows="2" data-ur-ph="مختصر تعارف..." data-en-ph="Brief intro..." placeholder="مختصر تعارف..."></textarea>
-
-            <label style="color: #cbd5e1;" data-ur="کور فوٹو اپلوڈ کریں:" data-en="Upload Cover Photo:">کور فوٹو اپلوڈ کریں:</label>
-            <input type="file" id="bookCoverInput" class="file-input" accept="image/*">
-
-            <label style="color: #cbd5e1;" data-ur="پی ڈی ایف فائل اپلوڈ کریں:" data-en="Upload PDF File:">پی ڈی ایف فائل اپلوڈ کریں:</label>
-            <input type="file" id="bookPdfInput" class="file-input" accept="application/pdf">
-
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="showReadBtn" checked> <span data-ur="آن لائن پڑھیں بٹن" data-en="Read Online Button">آن لائن پڑھیں بٹن</span></label>
-                <label><input type="checkbox" id="showDownloadBtn" checked> <span data-ur="ڈاؤن لوڈ بٹن" data-en="Download Button">ڈاؤن لوڈ بٹن</span></label>
-            </div>
-
-            <button onclick="uploadBook()" class="admin-btn" id="uploadBookBtn" data-ur="کتاب اپلوڈ کریں" data-en="Upload Book">کتاب اپلوڈ کریں</button>
+            <!-- SECTION 3: Poetry Gallery Upload -->
+            <h4 style="color: #d4af37; margin-bottom: 5px;" data-ur="3. تصویری کلام اپلوڈ کریں" data-en="3. Upload Poetry Image">3. تصویری کلام اپلوڈ کریں</h4>
+            <input type="file" id="poetryImageInput" accept="image/*" class="file-input">
+            <button onclick="uploadPoetryImage()" class="admin-btn" data-ur="اپلوڈ کریں 📤" data-en="Upload 📤">اپلوڈ کریں 📤</button>
+            <p id="poetryStatus" style="text-align: center; margin-top: 8px; font-weight: bold;"></p>
         </div>
+
     </div>
 
-    <!-- لاگ ان پاپ اپ -->
+    <!-- Admin Login Modal -->
     <div id="loginModal" class="modal-overlay">
         <div class="modal-box">
-            <h3 style="color: #D4AF37; margin-top: 0;" data-ur="🔐 ایڈمن لاگ ان" data-en="🔐 Admin Login">🔐 ایڈمن لاگ ان</h3>
-            <p style="color: #cbd5e1; font-size: 0.9rem;" data-ur="آگے بڑھنے کے لیے پاسورڈ درج کریں:" data-en="Enter password to proceed:">آگے بڑھنے کے لیے پاسورڈ درج کریں:</p>
-            <input type="password" id="adminPassInput" class="admin-input" data-ur-ph="پاسورڈ لکھیں..." data-en-ph="Enter password..." placeholder="پاسورڈ لکھیں..." style="text-align: center;">
+            <h3 style="color: #d4af37; margin-top: 0;" data-ur="🔐 ایڈمن لاگ ان" data-en="🔐 Admin Login">🔐 ایڈمن لاگ ان</h3>
+            <p style="color: #cbd5e1; font-size: 0.9rem;" data-ur="آگے بڑھنے کے لیے پاسورڈ درج کریں:" data-en="Enter password:">آگے بڑھنے کے لیے پاسورڈ درج کریں:</p>
+            <input type="password" id="adminPassInput" class="admin-input" placeholder="پاسورڈ لکھیں..." style="text-align: center;">
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button onclick="submitAdminLogin()" class="admin-btn" data-ur="لاگ ان" data-en="Login">لاگ ان</button>
-                <button onclick="closeLoginModal()" class="admin-btn" style="background-color: #334155; color: #fff;" data-ur="منسوخ" data-en="Cancel">منسوخ</button>
+                <button onclick="closeLoginModal()" class="admin-btn" style="background: #334155; color: #fff;" data-ur="منسوخ" data-en="Cancel">منسوخ</button>
             </div>
         </div>
     </div>
 
-    <!-- In-site PDF Reader -->
-    <div id="pdfModal" class="pdf-modal">
-        <button class="close-pdf" onclick="closePdfModal()" data-ur="بند کریں ❌" data-en="Close ❌">بند کریں ❌</button>
-        <iframe id="pdfViewer" class="pdf-viewer"></iframe>
-    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        © 2026 محمد رضوان رضیؔ - جملہ حقوق محفوظ ہیں۔
+    </footer>
+
+<script type="module">
+    import * as THREE from 'three';
+    window.THREE = THREE;
+</script>
 
 <script>
-    // Firebase Configuration
+    // Firebase Config
     const firebaseConfig = {
         apiKey: "AIzaSyBoeQyEWM87yWKAVAJ9IQonSx2RsfrAj1I",
         authDomain: "razzi-24272website.firebaseapp.com",
         projectId: "razzi-24272website",
         storageBucket: "razzi-24272website.firebasestorage.app",
         messagingSenderId: "752007825754",
-        appId: "1:752007825754:web:87567c26dd2d11d3a24b63",
-        measurementId: "G-GH8YWH7QGF"
+        appId: "1:752007825754:web:87567c26dd2d11d3a24b63"
     };
 
-    // Initialize Firebase
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
@@ -542,24 +767,40 @@
 
     window.onload = function() {
         listenToLiveStatus();
-        init3DBackground(); // 3D شروع
+        init3DBackground();
     };
 
-    // 3D Floating Particles Background
+    function showAboutSection() {
+        document.getElementById("aboutSection").style.display = "block";
+        document.getElementById("homeCardsGrid").style.display = "none";
+        document.getElementById("btnAbout").classList.add("active");
+        document.getElementById("btnHome").classList.remove("active");
+        window.scrollTo({ top: document.getElementById("aboutSection").offsetTop - 100, behavior: 'smooth' });
+    }
+
+    function showHomePage() {
+        document.getElementById("aboutSection").style.display = "none";
+        document.getElementById("homeCardsGrid").style.display = "grid";
+        document.getElementById("btnHome").classList.add("active");
+        document.getElementById("btnAbout").classList.remove("active");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function init3DBackground() {
+        if (typeof THREE === 'undefined') return;
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('bg-3d'), alpha: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         const geometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(1200 * 3);
+        const positions = new Float32Array(1000 * 3);
         for(let i = 0; i < positions.length; i++) {
             positions[i] = (Math.random() - 0.5) * 30;
         }
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-        const material = new THREE.PointsMaterial({color: 0xD4AF37, size: 0.04, transparent: true, opacity: 0.6});
+        const material = new THREE.PointsMaterial({color: 0xdfb758, size: 0.04, transparent: true, opacity: 0.6});
         const stars = new THREE.Points(geometry, material);
         scene.add(stars);
         camera.position.z = 4;
@@ -593,21 +834,14 @@
             }
         });
 
-        var inputs = document.querySelectorAll('[data-ur-ph]');
-        inputs.forEach(function(input) {
-            if (currentLang === 'ur') {
-                input.placeholder = input.getAttribute('data-en-ph');
-            } else {
-                input.placeholder = input.getAttribute('data-ur-ph');
-            }
-        });
-
         if (currentLang === 'ur') {
             langBtn.innerText = 'اردو';
             currentLang = 'en';
+            document.documentElement.setAttribute('dir', 'ltr');
         } else {
             langBtn.innerText = 'English';
             currentLang = 'ur';
+            document.documentElement.setAttribute('dir', 'rtl');
         }
     }
 
@@ -616,23 +850,19 @@
         navigator.clipboard.writeText(emailText);
 
         var copyBtn = document.getElementById("copy-btn");
-        var originalUr = copyBtn.getAttribute('data-ur');
-        var originalEn = copyBtn.getAttribute('data-en');
-
         copyBtn.innerText = (currentLang === 'ur')? "کاپی ہو گیا!" : "Copied!";
-        copyBtn.style.backgroundColor = "#22c55e";
+        copyBtn.style.background = "#22c55e";
         copyBtn.style.color = "#ffffff";
 
         setTimeout(function() {
-            copyBtn.innerText = (currentLang === 'ur')? originalUr : originalEn;
-            copyBtn.style.backgroundColor = "#D4AF37";
+            copyBtn.innerText = (currentLang === 'ur')? "کاپی کریں" : "Copy";
+            copyBtn.style.background = "var(--gold-gradient)";
             copyBtn.style.color = "#050505";
         }, 2000);
     }
 
     function openLoginModal() {
         document.getElementById("loginModal").style.display = "flex";
-        document.getElementById("adminPassInput").value = "";
     }
 
     function closeLoginModal() {
@@ -652,15 +882,14 @@
 
     function logoutAdmin() {
         document.getElementById("adminPanel").style.display = "none";
-        alert(currentLang === 'ur'? "آپ کامیاب لاگ آؤٹ ہو چکے ہیں!" : "You have logged out successfully!");
     }
 
     async function saveStatus() {
         var text = document.getElementById("newStatus").value;
         var file = document.getElementById("statusImgInput").files[0];
 
-        if (!text &&!file) {
-            alert(currentLang === 'ur'? "براہ کرم تحریر یا تصویر شامل کریں!" : "Please add text or image!");
+        if (!text && !file) {
+            alert("براہ کرم تحریر یا تصویر شامل کریں!");
             return;
         }
 
@@ -676,12 +905,12 @@
 
             await db.collection("status").doc("global_status").set({
                 text: text || "",
-                imageUrl: imageUrl,
+                imageUrl: imageUrl || "",
                 expiry: expiryTime,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            alert(currentLang === 'ur'? "اسٹیٹس تمام ڈیوائسز کے لیے لائیو ہو گیا!" : "Status live across all devices!");
+            alert("اسٹیٹس اپلوڈ ہو گیا!");
             document.getElementById("newStatus").value = "";
             document.getElementById("statusImgInput").value = "";
         } catch (error) {
@@ -691,12 +920,21 @@
 
     function listenToLiveStatus() {
         db.collection("status").doc("global_status")
-      .onSnapshot((doc) => {
+        .onSnapshot((doc) => {
             if (doc.exists) {
                 var data = doc.data();
                 var now = new Date().getTime();
                 if (data.expiry && now < data.expiry) {
-                    applyStatusUI(data.text, data.imageUrl);
+                    document.getElementById("statusText").innerText = data.text || "";
+                    var imgElem = document.getElementById("statusImgDisplay");
+                    if (data.imageUrl && data.imageUrl.trim() !== "") {
+                        imgElem.src = data.imageUrl;
+                        imgElem.style.display = "block";
+                    } else {
+                        imgElem.style.display = "none";
+                        imgElem.src = "";
+                    }
+                    document.getElementById("statusBox").style.display = "block";
                 } else {
                     document.getElementById("statusBox").style.display = "none";
                 }
@@ -709,115 +947,70 @@
     function deleteStatus() {
         db.collection("status").doc("global_status").delete().then(() => {
             document.getElementById("statusBox").style.display = "none";
-            alert(currentLang === 'ur'? "اسٹیٹس ختم کر دیا گیا ہے!" : "Status deleted successfully!");
+            alert("اسٹیٹس ختم کر دیا گیا!");
         });
     }
 
-    function applyStatusUI(text, imgUrl) {
-        document.getElementById("statusText").innerText = text || "";
-        var imgElem = document.getElementById("statusImgDisplay");
-        if (imgUrl) {
-            imgElem.src = imgUrl;
-            imgElem.style.display = "inline-block";
-        } else {
-            imgElem.style.display = "none";
-        }
-        document.getElementById("statusBox").style.display = "block";
-    }
-
     async function uploadBook() {
-        var title = document.getElementById("bookTitle").value;
-        var desc = document.getElementById("bookDesc").value;
-        var coverFile = document.getElementById("bookCoverInput").files[0];
-        var pdfFile = document.getElementById("bookPdfInput").files[0];
-        var showRead = document.getElementById("showReadBtn").checked;
-        var showDownload = document.getElementById("showDownloadBtn").checked;
+        var title = document.getElementById("bookTitleInput").value;
+        var desc = document.getElementById("bookDescInput").value;
+        var file = document.getElementById("bookImgInput").files[0];
+        var statusElem = document.getElementById("bookStatus");
 
-        if (!title ||!coverFile ||!pdfFile) {
-            alert(currentLang === 'ur'? "براہ کرم تمام معلومات اور فائلیں شامل کریں!" : "Please fill all details and upload files!");
+        if (!title) {
+            alert("براہ کرم کتاب کا نام درج کریں!");
             return;
         }
 
-        var btn = document.getElementById("uploadBookBtn");
-        btn.innerText = currentLang === 'ur'? "اپلوڈ ہو رہا ہے..." : "Uploading...";
-        btn.disabled = true;
+        statusElem.innerText = "کتاب اپلوڈ ہو رہی ہے...";
+        var coverUrl = "";
 
         try {
-            var coverRef = storage.ref('covers/' + Date.now() + '_' + coverFile.name);
-            await coverRef.put(coverFile);
-            var coverUrl = await coverRef.getDownloadURL();
-
-            var pdfRef = storage.ref('pdfs/' + Date.now() + '_' + pdfFile.name);
-            await pdfRef.put(pdfFile);
-            var pdfUrl = await pdfRef.getDownloadURL();
+            if (file) {
+                var storageRef = storage.ref('books/' + Date.now() + '_' + file.name);
+                await storageRef.put(file);
+                coverUrl = await storageRef.getDownloadURL();
+            }
 
             await db.collection("books").add({
                 title: title,
-                description: desc,
-                coverUrl: coverUrl,
-                pdfUrl: pdfUrl,
-                showRead: showRead,
-                showDownload: showDownload,
+                description: desc || "",
+                coverUrl: coverUrl || "",
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            alert(currentLang === 'ur'? "کتاب کامیابی سے اپلوڈ ہو گئی!" : "Book uploaded successfully!");
-            location.reload();
+            statusElem.innerText = "کتاب کامیابی سے شامل ہو گئی! ✅";
+            document.getElementById("bookTitleInput").value = "";
+            document.getElementById("bookDescInput").value = "";
+            document.getElementById("bookImgInput").value = "";
         } catch (error) {
-            alert("Error: " + error.message);
-            btn.innerText = currentLang === 'ur'? "کتاب اپلوڈ کریں" : "Upload Book";
-            btn.disabled = false;
+            statusElem.innerText = "Error: " + error.message;
         }
     }
 
-    function openPdfViewer(url) {
-        document.getElementById("pdfViewer").src = url;
-        document.getElementById("pdfModal").style.display = "flex";
-    }
+    async function uploadPoetryImage() {
+        var file = document.getElementById("poetryImageInput").files[0];
+        var statusElem = document.getElementById("poetryStatus");
 
-    function closePdfModal() {
-        document.getElementById("pdfModal").style.display = "none";
-        document.getElementById("pdfViewer").src = "";
-    }
+        if (!file) return;
 
-    function uploadPoetryImage() {
-        const fileInput = document.getElementById('poetryImageInput');
-        const statusDiv = document.getElementById('poetryStatus');
-        const file = fileInput.files[0];
+        statusElem.innerText = "اپلوڈ ہو رہا ہے...";
 
-        if (!file) {
-            alert(currentLang === 'ur'? "براہِ کرم تصویر منتخب کریں!" : "Please select an image!");
-            return;
+        try {
+            var storageRef = storage.ref('gallery/' + Date.now() + '_' + file.name);
+            await storageRef.put(file);
+            var imageUrl = await storageRef.getDownloadURL();
+
+            await db.collection("gallery").add({
+                imageUrl: imageUrl,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            statusElem.innerText = "اپلوڈ کامیاب! ✅";
+            document.getElementById("poetryImageInput").value = "";
+        } catch (error) {
+            statusElem.innerText = "Error: " + error.message;
         }
-
-        statusDiv.style.color = "#D4AF37";
-        statusDiv.innerText = currentLang === 'ur'? "تصویر اپلوڈ ہو رہی ہے..." : "Uploading image...";
-
-        const storageRef = storage.ref('poetry/' + Date.now() + '_' + file.name);
-        const uploadTask = storageRef.put(file);
-
-        uploadTask.on('state_changed',
-            null,
-            (error) => {
-                statusDiv.style.color = "#ff5252";
-                statusDiv.innerText = (currentLang === 'ur'? "خرابی: " : "Error: ") + error.message;
-            },
-            () => {
-                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                    db.collection("poetry").add({
-                        imageUrl: downloadURL,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    }).then(() => {
-                        statusDiv.style.color = "#4caf50";
-                        statusDiv.innerText = currentLang === 'ur'? "تصویری کلام کامیابی سے اپلوڈ ہو گیا! ✅" : "Poetry image uploaded successfully! ✅";
-                        fileInput.value = "";
-                    }).catch((err) => {
-                        statusDiv.style.color = "#ff5252";
-                        statusDiv.innerText = (currentLang === 'ur'? "ڈیٹا بیس میں خرابی: " : "DB Error: ") + err.message;
-                    });
-                });
-            }
-        );
     }
 </script>
 </body>
